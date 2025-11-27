@@ -1,0 +1,42 @@
+/* Print Styles for Resume Download */
+@media print {
+
+    /* Hide everything except the resume preview */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Show only the resume preview */
+    #resume-preview,
+    #resume-preview * {
+        visibility: visible;
+    }
+
+    /* Position resume at top of page */
+    #resume-preview {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    /* Remove any scaling/transforms */
+    #resume-preview>div {
+        transform: none !important;
+        width: 100% !important;
+        max-width: 8.5in !important;
+        margin: 0 auto !important;
+    }
+
+    /* Page setup */
+    @page {
+        size: letter;
+        margin: 0;
+    }
+
+    /* Remove shadows and borders */
+    #resume-preview * {
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+}

@@ -1,0 +1,208 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  role          String    @default("user") // user or admin
+  
+  // Onboarding info
+  currentRole   String?
+  targetRole    String?
+  experienceLevel String?
+  
+  // Payment gateway IDs
+  stripeCustomerId    String?
+  razorpayCustomerId  String?
+  
+  // Trial tracking
+  trialEndsAt   DateTime?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  resumes       Resume[]
+  analyses      JobAnalysis[]
+  subscription  Subscription?
+  payments      Payment[]
+  usageRecords  UsageRecord[]
+  
+  @@index([email])
+}
+
+model Subscription {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Plan details
+  plan          String    // free, pro, premium, payperuse
+  status        String    // active, cancelled, expired, trialing
+  
+  // Billing
+  billingCycle  String?   // monthly, yearly
+  amount        Float     @default(0)
+  currency      String    @default("INR")
+  
+  // Subscription period
+  currentPeriodStart  DateTime?
+  currentPeriodEnd    DateTime?
+  cancelAtPeriodEnd   Boolean   @default(false)
+  
+  // Payment gateway references
+  stripeSubscriptionId    String?
+  razorpaySubscriptionId  String?
+  
+  // Usage limits (reset monthly)
+  downloadsLimit    Int       @default(0)  // 0 = unlimited
+  analysesLimit     Int       @default(3)  // free tier default
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+}
+
+model Payment {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Payment details
+  amount        Float
+  currency      String    @default("INR")
+  status        String    // pending, completed, failed, refunded
+  
+  // Payment type
+  type          String    // subscription, one_time, payperuse
+  description   String?
+  
+  // Payment gateway
+  gateway       String    // razorpay, stripe
+  gatewayPaymentId    String?
+  gatewayOrderId      String?
+  
+  // Invoice
+  invoiceId     String?
+  invoice       Invoice?  @relation(fields: [invoiceId], references: [id])
+  
+  // Metadata
+  metadata      String?   @default("{}")
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+  @@index([gateway])
+}
+
+model Invoice {
+  id            String    @id @default(cuid())
+  
+  // Invoice details
+  invoiceNumber String    @unique
+  amount        Float
+  currency      String    @default("INR")
+  status        String    // draft, paid, void
+  
+  // Customer info
+  customerName  String
+  customerEmail String
+  
+  // Dates
+  issuedAt      DateTime  @default(now())
+  dueAt         DateTime?
+  paidAt        DateTime?
+  
+  // PDF URL
+  pdfUrl        String?
+  
+  payments      Payment[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([invoiceNumber])
+  @@index([customerEmail])
+}
+
+model UsageRecord {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Usage type
+  type          String    // download, analysis, template_access
+  
+  // Resource reference
+  resourceId    String?   // resume ID, analysis ID, etc.
+  
+  // Metadata
+  metadata      String?   @default("{}")
+  
+  createdAt     DateTime  @default(now())
+  
+  @@index([userId, type])
+  @@index([createdAt])
+}
+
+model Resume {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title         String
+  templateType  String    @default("classic") // classic, modern, creative, minimal, professional
+  colorTheme    String    @default("blue")
+  fontFamily    String    @default("sans")
+  
+  // Resume data stored as JSON string
+  data          String    @default("{}")
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  analyses      JobAnalysis[]
+  
+  @@index([userId])
+}
+
+model JobAnalysis {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  resumeId          String?
+  resume            Resume?   @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  
+  jobTitle          String
+  jobDescription    String
+  
+  // Scores
+  atsScore          Float
+  matchScore        Float
+  skillsMatch       Float
+  experienceMatch   Float
+  educationMatch    Float
+  
+  // Analysis results stored as JSON string
+  analysis          String    @default("{}")
+  
+  createdAt         DateTime  @default(now())
+  
+  @@index([userId])
+  @@index([resumeId])
+}
+
