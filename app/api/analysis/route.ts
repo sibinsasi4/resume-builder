@@ -5,7 +5,9 @@ import { prisma } from '@/lib/prisma';
 import { analyzeResumeWithJob } from '@/lib/ai/analysisService';
 import { ResumeData } from '@/lib/types';
 
-export async function POST(req: NextRequest) {
+export const dynamic = 'force-dynamic';
+
+export async function POST(req: Request) {
     try {
         const session = await getServerSession(authOptions);
 

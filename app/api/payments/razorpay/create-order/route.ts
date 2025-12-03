@@ -4,7 +4,9 @@ import { authOptions } from '@/lib/auth';
 import { createRazorpayOrder, RAZORPAY_PLANS } from '@/lib/payments/razorpay';
 import { prisma } from '@/lib/prisma';
 
-export async function POST(req: NextRequest) {
+export const dynamic = 'force-dynamic';
+
+export async function POST(req: Request) {
     try {
         const session = await getServerSession(authOptions);
 
@@ -63,7 +65,7 @@ export async function POST(req: NextRequest) {
         const order = await createRazorpayOrder(
             finalAmount,
             planDetails.currency,
-            `order_${session.user.email}_${Date.now()}`
+            `order_${session.user.email}_${Date.now()} `
         );
 
         return NextResponse.json({

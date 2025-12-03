@@ -5,7 +5,9 @@ import { prisma } from '@/lib/prisma';
 import { searchJobs } from '@/lib/services/jobSearch';
 import { getUserSubscription } from '@/lib/payments/subscription';
 
-export async function POST(req: NextRequest) {
+export const dynamic = 'force-dynamic';
+
+export async function POST(req: Request) {
     try {
         const session = await getServerSession(authOptions);
         if (!session?.user?.id) {

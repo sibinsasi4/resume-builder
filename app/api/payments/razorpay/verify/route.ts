@@ -5,7 +5,9 @@ import { verifyRazorpaySignature } from '@/lib/payments/razorpay';
 import { createSubscription } from '@/lib/payments/subscription';
 import { prisma } from '@/lib/prisma';
 
-export async function POST(req: NextRequest) {
+export const dynamic = 'force-dynamic';
+
+export async function POST(req: Request) {
     try {
         const session = await getServerSession(authOptions);
 

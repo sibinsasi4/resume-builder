@@ -5,6 +5,8 @@ import { cancelSubscription as cancelSub } from '@/lib/payments/subscription';
 import { cancelRazorpaySubscription } from '@/lib/payments/razorpay';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
     try {
         const session = await getServerSession(authOptions);

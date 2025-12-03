@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { v2 as cloudinary } from 'cloudinary';
 import { authOptions } from '@/lib/auth';
 import { parseResumeFile, validateFileSize, validateFileType } from '@/lib/resumeParser';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
     try {
