@@ -23,7 +23,9 @@ interface Job {
     isFresher?: boolean;
 }
 
-export default function JobsPage() {
+import { Suspense } from 'react';
+
+function JobsContent() {
     const { data: session, status } = useSession();
     const router = useRouter();
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -212,5 +214,13 @@ export default function JobsPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function JobsPage() {
+    return (
+        <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
+            <JobsContent />
+        </Suspense>
     );
 }
