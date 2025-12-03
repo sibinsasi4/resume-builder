@@ -43,9 +43,31 @@ export function extractSkills(text: string): string[] {
         // Tools
         'git', 'jira', 'confluence', 'slack', 'figma', 'sketch', 'photoshop', 'illustrator',
         // Soft skills
-        'leadership', 'communication', 'teamwork', 'problem-solving', 'analytical', 'creative',
+        'leadership', 'communication', 'teamwork', 'problem-solving', 'analytical', 'creative', 'negotiation', 'time management', 'adaptability',
+        // Sales & Marketing
+        'sales', 'marketing', 'crm', 'seo', 'sem', 'content marketing', 'social media', 'lead generation', 'cold calling', 'account management', 'b2b', 'b2c', 'salesforce', 'hubspot', 'email marketing', 'branding', 'market research',
+        // HR & Management
+        'recruiting', 'talent acquisition', 'human resources', 'employee relations', 'performance management', 'onboarding', 'training', 'payroll', 'compliance', 'strategic planning', 'project management', 'operations',
+        // Operations & Strategy
+        'logistics', 'supply chain', 'procurement', 'inventory management', 'process improvement', 'six sigma', 'lean', 'kaizen', 'stakeholder management', 'vendor management', 'contract negotiation', 'risk management', 'change management', 'business analysis', 'kpi', 'okr', 'resource allocation', 'workflow optimization', 'sops',
+        // Finance & Accounting
+        'accounting', 'finance', 'budgeting', 'forecasting', 'financial analysis', 'excel', 'quickbooks', 'auditing', 'taxation', 'financial reporting', 'gaap', 'ifrs', 'payroll', 'bookkeeping', 'compliance',
+        // Data & Analytics
+        'data analysis', 'statistics', 'machine learning', 'ai', 'tableau', 'power bi', 'excel', 'data visualization', 'big data', 'sql', 'python', 'r', 'sas',
+        // Healthcare & Medical
+        'patient care', 'nursing', 'medical terminology', 'emr', 'ehr', 'hipaa', 'clinical research', 'healthcare management', 'public health', 'cpr', 'bls', 'triage', 'phlebotomy', 'medical billing', 'medical coding',
+        // Engineering (Non-Software)
+        'autocad', 'solidworks', 'matlab', 'civil engineering', 'mechanical engineering', 'electrical engineering', 'project engineering', 'manufacturing', 'quality control', 'quality assurance', 'maintenance', 'robotics', 'plc', 'scada',
+        // Legal & Compliance
+        'legal research', 'contract law', 'corporate law', 'litigation', 'legal writing', 'compliance', 'regulatory affairs', 'intellectual property', 'paralegal', 'mediation', 'arbitration',
+        // Creative & Design
+        'graphic design', 'ui/ux', 'adobe creative suite', 'photoshop', 'illustrator', 'indesign', 'video editing', 'premiere pro', 'after effects', 'copywriting', 'content creation', 'social media marketing', 'branding', 'photography',
+        // Administrative & Office
+        'data entry', 'customer service', 'office management', 'scheduling', 'calendar management', 'microsoft office', 'outlook', 'powerpoint', 'word', 'transcription', 'filing', 'receptionist', 'executive assistant',
+        // Education & Training
+        'curriculum development', 'instructional design', 'classroom management', 'teaching', 'tutoring', 'e-learning', 'lms', 'mentoring', 'coaching', 'educational technology',
         // Other
-        'agile', 'scrum', 'rest', 'api', 'microservices', 'testing', 'debugging', 'optimization',
+        'agile', 'scrum', 'rest', 'api', 'microservices', 'testing', 'debugging', 'optimization', 'customer service', 'client relations', 'public speaking', 'writing', 'editing', 'research', 'troubleshooting',
     ];
 
     const lowerText = text.toLowerCase();

@@ -20,33 +20,46 @@ export function generateSwotAnalysis(
     const requiredSkills = jobDescription.requiredSkills.map(s => s.toLowerCase());
     const preferredSkills = jobDescription.preferredSkills.map(s => s.toLowerCase());
 
+    // Helper for random phrasing
+    const pick = (opts: string[]) => opts[Math.floor(Math.random() * opts.length)];
+
     // STRENGTHS
     if (matchScores.skillsMatch >= 70) {
-        strengths.push(`Strong skills alignment with ${matchScores.skillsMatch}% match to job requirements`);
+        strengths.push(pick([
+            `Strong skills alignment (${matchScores.skillsMatch}%) with the core job requirements.`,
+            `Your technical profile is a great match (${matchScores.skillsMatch}%) for this role.`,
+            `You possess most of the key skills required for this position.`
+        ]));
     }
 
     if (matchScores.experienceMatch >= 80) {
-        strengths.push('Your experience level matches or exceeds the job requirements');
+        strengths.push(pick([
+            'Your experience level is well-suited for this position.',
+            'You have the professional background expected for this role.',
+            'Your career history aligns perfectly with the seniority of this job.'
+        ]));
     }
 
     if (resumeData.certifications && resumeData.certifications.length > 0) {
-        strengths.push(`You have ${resumeData.certifications.length} relevant certification(s) that add credibility`);
-    }
-
-    if (resumeData.projects && resumeData.projects.length >= 3) {
-        strengths.push('Strong project portfolio demonstrates hands-on experience');
+        strengths.push(`You have ${resumeData.certifications.length} certification(s) that demonstrate your commitment to learning.`);
     }
 
     const matchingSkills = resumeSkills.filter(skill =>
         requiredSkills.some(req => skill.includes(req) || req.includes(skill))
     );
     if (matchingSkills.length > 0) {
-        strengths.push(`Key matching skills: ${matchingSkills.slice(0, 5).join(', ')}`);
+        // Capitalize skills
+        const formattedSkills = matchingSkills.slice(0, 5).map(s => s.charAt(0).toUpperCase() + s.slice(1));
+        strengths.push(`You match key requirements: ${formattedSkills.join(', ')}.`);
     }
 
     // WEAKNESSES
     if (matchScores.skillsMatch < 60) {
-        weaknesses.push('Significant skills gap - missing several key requirements from the job description');
+        weaknesses.push(pick([
+            'There is a gap in the specific skills required for this role.',
+            'Your profile is missing some of the core technical requirements.',
+            'You may need to demonstrate more proficiency in the required tools.'
+        ]));
     }
 
     const missingSkills = requiredSkills.filter(skill =>
@@ -54,24 +67,22 @@ export function generateSwotAnalysis(
     );
 
     if (missingSkills.length > 0) {
-        weaknesses.push(`Missing required skills: ${missingSkills.slice(0, 5).join(', ')}`);
+        const formattedMissing = missingSkills.slice(0, 5).map(s => s.charAt(0).toUpperCase() + s.slice(1));
+        weaknesses.push(`Missing or not explicitly mentioned: ${formattedMissing.join(', ')}.`);
     }
 
     if (matchScores.experienceMatch < 60) {
-        weaknesses.push('Experience level may be below what the role requires');
-    }
-
-    if (!resumeData.experience || resumeData.experience.length === 0) {
-        weaknesses.push('No work experience listed - consider adding internships or relevant projects');
+        weaknesses.push('The role may require more years of experience than currently listed.');
     }
 
     if (!resumeData.summary) {
-        weaknesses.push('Missing professional summary - add one to make a strong first impression');
+        weaknesses.push('A professional summary is missing, which is key for a quick first impression.');
     }
 
     // OPPORTUNITIES
     if (missingSkills.length > 0) {
-        opportunities.push(`Learn these in-demand skills: ${missingSkills.slice(0, 3).join(', ')}`);
+        const topMissing = missingSkills.slice(0, 3).map(s => s.charAt(0).toUpperCase() + s.slice(1));
+        opportunities.push(`Highlight any experience with ${topMissing.join(', ')} in your cover letter.`);
     }
 
     const missingPreferred = preferredSkills.filter(skill =>
@@ -79,22 +90,23 @@ export function generateSwotAnalysis(
     );
 
     if (missingPreferred.length > 0) {
-        opportunities.push(`Consider gaining experience in: ${missingPreferred.slice(0, 3).join(', ')}`);
+        const formattedPref = missingPreferred.slice(0, 3).map(s => s.charAt(0).toUpperCase() + s.slice(1));
+        opportunities.push(`Stand out by mentioning knowledge of: ${formattedPref.join(', ')}.`);
     }
 
     if (!resumeData.projects || resumeData.projects.length < 2) {
-        opportunities.push('Build 2-3 projects showcasing the required skills to strengthen your application');
+        opportunities.push('Adding a relevant project could demonstrate your practical skills better.');
     }
 
-    if (!resumeData.certifications || resumeData.certifications.length === 0) {
-        opportunities.push('Obtain relevant certifications to boost your credibility');
-    }
-
-    opportunities.push('Tailor your resume summary to highlight how your experience aligns with this specific role');
+    opportunities.push(pick([
+        'Tailor your summary to specifically mention the job title and key requirements.',
+        'Rephrase your bullet points to match the terminology used in the job description.',
+        'Quantify your achievements (e.g., "increased sales by 20%") to make a stronger impact.'
+    ]));
 
     return {
-        strengths: strengths.length > 0 ? strengths : ['Review your resume to identify your key strengths'],
-        weaknesses: weaknesses.length > 0 ? weaknesses : ['Your resume looks strong overall'],
+        strengths: strengths.length > 0 ? strengths : ['Your resume has a solid foundation.'],
+        weaknesses: weaknesses.length > 0 ? weaknesses : ['No major weaknesses detected relative to this job.'],
         opportunities: opportunities.slice(0, 5),
     };
 }

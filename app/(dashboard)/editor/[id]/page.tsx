@@ -521,6 +521,23 @@ export default function EditorPage() {
                                                     }
                                                 })}
                                                 className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                placeholder="linkedin.com/in/username"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-medium text-gray-600">GitHub</label>
+                                            <input
+                                                type="text"
+                                                value={resumeData.personalInfo?.github || ''}
+                                                onChange={(e) => setResume({
+                                                    ...resume,
+                                                    data: {
+                                                        ...resumeData,
+                                                        personalInfo: { ...resumeData.personalInfo, github: e.target.value }
+                                                    }
+                                                })}
+                                                className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                placeholder="github.com/username"
                                             />
                                         </div>
                                         <div>
@@ -536,6 +553,7 @@ export default function EditorPage() {
                                                     }
                                                 })}
                                                 className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                placeholder="yourportfolio.com"
                                             />
                                         </div>
                                     </div>
@@ -628,51 +646,41 @@ export default function EditorPage() {
             <PricingModal
                 isOpen={showPricingModal}
                 onClose={() => setShowPricingModal(false)}
-                onSelectPlan={async (plan: string, gateway: 'razorpay' | 'stripe') => {
+                onSelectPlan={async (plan: string, gateway: 'razorpay', couponCode?: string) => {
                     // Handle payment selection (same as dashboard)
                     try {
-                        if (gateway === 'razorpay') {
-                            const response = await fetch('/api/payments/razorpay/create-order', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ plan }),
-                            });
-                            const { orderId, amount, currency, keyId } = await response.json();
-                            const script = document.createElement('script');
-                            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-                            script.async = true;
-                            document.body.appendChild(script);
-                            script.onload = () => {
-                                const options = {
-                                    key: keyId,
-                                    amount,
-                                    currency,
-                                    order_id: orderId,
-                                    name: 'VISISH',
-                                    description: `${plan} Plan`,
-                                    handler: async (response: any) => {
-                                        await fetch('/api/payments/razorpay/verify', {
-                                            method: 'POST',
-                                            headers: { 'Content-Type': 'application/json' },
-                                            body: JSON.stringify({ ...response, plan, billingCycle: 'monthly' }),
-                                        });
-                                        setShowPricingModal(false);
-                                        fetchUserSubscription();
-                                        alert('Payment successful! You can now download your resume.');
-                                    },
-                                };
-                                const razorpay = new (window as any).Razorpay(options);
-                                razorpay.open();
+                        const response = await fetch('/api/payments/razorpay/create-order', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ plan, couponCode }),
+                        });
+                        const { orderId, amount, currency, keyId } = await response.json();
+                        const script = document.createElement('script');
+                        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+                        script.async = true;
+                        document.body.appendChild(script);
+                        script.onload = () => {
+                            const options = {
+                                key: keyId,
+                                amount,
+                                currency,
+                                order_id: orderId,
+                                name: 'VISISH',
+                                description: `${plan} Plan`,
+                                handler: async (response: any) => {
+                                    await fetch('/api/payments/razorpay/verify', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ ...response, plan, billingCycle: 'monthly' }),
+                                    });
+                                    setShowPricingModal(false);
+                                    fetchUserSubscription();
+                                    alert('Payment successful! You can now download your resume.');
+                                },
                             };
-                        } else {
-                            const response = await fetch('/api/payments/stripe/checkout', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ plan, billingCycle: 'monthly' }),
-                            });
-                            const { url } = await response.json();
-                            window.location.href = url;
-                        }
+                            const razorpay = new (window as any).Razorpay(options);
+                            razorpay.open();
+                        };
                     } catch (error) {
                         console.error('Payment error:', error);
                         alert('Payment failed. Please try again.');

@@ -1,58 +1,94 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-import { redirect } from 'next/navigation';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
+import Button from '@/components/ui/Button';
 import {
-    User,
+    User as UserIcon,
     Mail,
     Calendar,
     Clock,
     Shield,
     CheckCircle,
-    XCircle,
-    Search
+    Search,
+    Gift
 } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
+interface User {
+    id: string;
+    name: string | null;
+    email: string;
+    role: string;
+    createdAt: string;
+    sessions: { lastActiveAt: string }[];
+    _count: {
+        resumes: number;
+        downloads: number;
+    };
+}
 
-export default async function AdminUsersPage() {
-    const session = await getServerSession(authOptions);
+export default function AdminUsersPage() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
+    const [users, setUsers] = useState<User[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [showGrantModal, setShowGrantModal] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [grantAmount, setGrantAmount] = useState('1');
 
-    if (!session?.user?.id) {
-        redirect('/login');
-    }
-
-    // Check if user is admin
-    const currentUser = await prisma.user.findUnique({
-        where: { id: session.user.id },
-        select: { role: true }
-    });
-
-    if (currentUser?.role !== 'admin') {
-        redirect('/dashboard');
-    }
-
-    // Fetch all users with their latest session
-    const users = await prisma.user.findMany({
-        include: {
-            sessions: {
-                orderBy: {
-                    lastActiveAt: 'desc'
-                },
-                take: 1
-            },
-            _count: {
-                select: {
-                    resumes: true,
-                    downloads: true
-                }
-            }
-        },
-        orderBy: {
-            createdAt: 'desc'
+    useEffect(() => {
+        if (status === 'unauthenticated') {
+            router.push('/login');
+        } else if (session?.user?.role !== 'admin') {
+            // router.push('/dashboard'); // Allow loading to check role
+        } else {
+            fetchUsers();
         }
-    });
+    }, [status, session, router]);
+
+    const fetchUsers = async () => {
+        try {
+            const response = await fetch('/api/admin/users');
+            if (response.ok) {
+                const data = await response.json();
+                setUsers(data.users);
+            }
+        } catch (error) {
+            console.error('Failed to fetch users:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleGrantAccess = async () => {
+        if (!selectedUser) return;
+
+        try {
+            const response = await fetch('/api/admin/users/grant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: selectedUser.id,
+                    downloads: grantAmount
+                }),
+            });
+
+            if (response.ok) {
+                alert(`Successfully granted ${grantAmount} downloads to ${selectedUser.name || selectedUser.email}`);
+                setShowGrantModal(false);
+                setSelectedUser(null);
+            } else {
+                alert('Failed to grant access');
+            }
+        } catch (error) {
+            console.error('Error granting access:', error);
+            alert('Error granting access');
+        }
+    };
+
+    if (loading) return <div className="p-8 text-center">Loading...</div>;
 
     return (
         <div className="min-h-screen bg-gray-50 p-8">
@@ -60,7 +96,7 @@ export default async function AdminUsersPage() {
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                        <User className="w-8 h-8 text-blue-600" />
+                        <UserIcon className="w-8 h-8 text-blue-600" />
                         User Management
                     </h1>
                     <p className="text-gray-500 mt-2">View and manage registered users</p>
@@ -74,7 +110,6 @@ export default async function AdminUsersPage() {
                                 Total Users: {users.length}
                             </span>
                         </div>
-                        {/* Placeholder for search - can be implemented later */}
                         <div className="relative">
                             <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                             <input
@@ -96,10 +131,11 @@ export default async function AdminUsersPage() {
                                     <th className="px-6 py-4 font-semibold">Joined</th>
                                     <th className="px-6 py-4 font-semibold">Last Login</th>
                                     <th className="px-6 py-4 font-semibold text-center">Activity</th>
+                                    <th className="px-6 py-4 font-semibold text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {(users as any[]).map((user) => {
+                                {users.map((user) => {
                                     const lastSession = user.sessions?.[0];
                                     const isOnline = lastSession &&
                                         (new Date().getTime() - new Date(lastSession.lastActiveAt).getTime() < 24 * 60 * 60 * 1000);
@@ -166,14 +202,21 @@ export default async function AdminUsersPage() {
                                                         <div className="font-bold text-gray-900">{user._count?.resumes || 0}</div>
                                                         <div className="text-xs">Resumes</div>
                                                     </div>
-                                                    {/* Downloads disabled for now due to API crash */}
-                                                    {/* 
-                                                    <div className="text-center" title="Downloads">
-                                                        <div className="font-bold text-gray-900">{user._count.downloads}</div>
-                                                        <div className="text-xs">Downloads</div>
-                                                    </div>
-                                                    */}
                                                 </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => {
+                                                        setSelectedUser(user);
+                                                        setShowGrantModal(true);
+                                                    }}
+                                                    className="text-blue-600 hover:bg-blue-50"
+                                                >
+                                                    <Gift className="w-4 h-4 mr-1" />
+                                                    Grant
+                                                </Button>
                                             </td>
                                         </tr>
                                     );
@@ -183,6 +226,41 @@ export default async function AdminUsersPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Grant Access Modal */}
+            {showGrantModal && selectedUser && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-sm">
+                        <h3 className="text-lg font-bold mb-4">Grant Free Downloads</h3>
+                        <p className="text-sm text-gray-600 mb-4">
+                            Granting access to <span className="font-semibold">{selectedUser.name || selectedUser.email}</span>
+                        </p>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Number of Downloads</label>
+                                <select
+                                    value={grantAmount}
+                                    onChange={(e) => setGrantAmount(e.target.value)}
+                                    className="w-full px-3 py-2 border rounded-lg"
+                                >
+                                    <option value="1">1 Download</option>
+                                    <option value="2">2 Downloads</option>
+                                    <option value="5">5 Downloads</option>
+                                    <option value="10">10 Downloads</option>
+                                </select>
+                            </div>
+                            <div className="flex justify-end gap-2">
+                                <Button variant="ghost" onClick={() => setShowGrantModal(false)}>
+                                    Cancel
+                                </Button>
+                                <Button onClick={handleGrantAccess}>
+                                    Grant Access
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

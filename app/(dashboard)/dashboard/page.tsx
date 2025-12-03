@@ -8,6 +8,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import UsageWidget from '@/components/subscription/UsageWidget';
 import PricingModal from '@/components/subscription/PricingModal';
+import DashboardNavbar from '@/components/dashboard/DashboardNavbar';
 import { formatDate } from '@/lib/utils';
 import {
     Users, FileText, DollarSign, TrendingUp, TrendingDown, Download, Eye, Sparkles,
@@ -142,61 +143,49 @@ export default function DashboardPage() {
         }
     };
 
-    const handleSelectPlan = async (plan: string, gateway: 'razorpay' | 'stripe') => {
+    const handleSelectPlan = async (plan: string, gateway: 'razorpay', couponCode?: string) => {
         try {
-            if (gateway === 'razorpay') {
-                // Create Razorpay order
-                const response = await fetch('/api/payments/razorpay/create-order', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ plan }),
-                });
+            // Create Razorpay order
+            const response = await fetch('/api/payments/razorpay/create-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ plan, couponCode }),
+            });
 
-                const { orderId, amount, currency, keyId } = await response.json();
+            const { orderId, amount, currency, keyId } = await response.json();
 
-                // Load Razorpay script
-                const script = document.createElement('script');
-                script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-                script.async = true;
-                document.body.appendChild(script);
+            // Load Razorpay script
+            const script = document.createElement('script');
+            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+            script.async = true;
+            document.body.appendChild(script);
 
-                script.onload = () => {
-                    const options = {
-                        key: keyId,
-                        amount,
-                        currency,
-                        order_id: orderId,
-                        name: 'VISISH',
-                        description: `${plan} Plan`,
-                        handler: async (response: any) => {
-                            // Verify payment
-                            await fetch('/api/payments/razorpay/verify', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    ...response,
-                                    plan,
-                                    billingCycle: 'monthly',
-                                }),
-                            });
-                            setShowPricingModal(false);
-                            window.location.reload();
-                        },
-                    };
-                    const razorpay = new (window as any).Razorpay(options);
-                    razorpay.open();
+            script.onload = () => {
+                const options = {
+                    key: keyId,
+                    amount,
+                    currency,
+                    order_id: orderId,
+                    name: 'VISISH',
+                    description: `${plan} Plan`,
+                    handler: async (response: any) => {
+                        // Verify payment
+                        await fetch('/api/payments/razorpay/verify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                ...response,
+                                plan,
+                                billingCycle: 'monthly',
+                            }),
+                        });
+                        setShowPricingModal(false);
+                        window.location.reload();
+                    },
                 };
-            } else {
-                // Stripe checkout
-                const response = await fetch('/api/payments/stripe/checkout', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ plan, billingCycle: 'monthly' }),
-                });
-
-                const { url } = await response.json();
-                window.location.href = url;
-            }
+                const razorpay = new (window as any).Razorpay(options);
+                razorpay.open();
+            };
         } catch (error) {
             console.error('Payment error:', error);
         }
@@ -215,22 +204,7 @@ export default function DashboardPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-            {/* Navbar */}
-            <nav className="bg-white shadow-sm border-b">
-                <div className="container mx-auto px-4 py-4">
-                    <div className="flex justify-between items-center">
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                            VISISH
-                        </h1>
-                        <div className="flex items-center gap-4">
-                            <span className="text-gray-600">Welcome, {session?.user?.name}</span>
-                            <Button variant="outline" size="sm" onClick={() => signOut()}>
-                                Sign Out
-                            </Button>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+            <DashboardNavbar />
 
             {/* Main Content */}
             <div className="container mx-auto px-4 py-8">
@@ -471,8 +445,18 @@ export default function DashboardPage() {
                                                     size="sm"
                                                     variant="outline"
                                                     onClick={() => router.push(`/analysis/${resume.id}`)}
+                                                    title="AI Analysis"
                                                 >
                                                     📊
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() => router.push(`/dashboard/jobs?resumeId=${resume.id}`)}
+                                                    title="Job Matches"
+                                                    className="text-blue-600 hover:bg-blue-50"
+                                                >
+                                                    💼
                                                 </Button>
                                                 <Button
                                                     size="sm"

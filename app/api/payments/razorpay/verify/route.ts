@@ -53,10 +53,10 @@ export async function POST(req: NextRequest) {
         // Determine amount based on plan
         let amount = 0;
         if (plan === 'payperuse') {
-            amount = 9;
-        } else if (plan === 'pro' && billingCycle === 'monthly') {
+            amount = 19;
+        } else if (plan === 'monthly') {
             amount = 299;
-        } else if (plan === 'pro' && billingCycle === 'yearly') {
+        } else if (plan === 'yearly') {
             amount = 2999;
         }
 

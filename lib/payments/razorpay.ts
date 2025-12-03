@@ -11,7 +11,7 @@ export const razorpay = process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_
 // Plan pricing in INR (paise - 1 INR = 100 paise)
 export const RAZORPAY_PLANS = {
     payperuse: {
-        amount: 900, // ₹9 in paise
+        amount: 1900, // ₹19 in paise
         currency: 'INR',
         name: 'Pay Per Download',
     },

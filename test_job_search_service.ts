@@ -1,0 +1,16 @@
+import { searchJobs } from './lib/services/jobSearch';
+
+async function main() {
+    const queries = ['Software Engineer', 'Developer', 'React', 'Manager'];
+
+    for (const query of queries) {
+        console.log(`\nTesting query: "${query}"`);
+        const jobs = await searchJobs(query, 'Remote');
+        console.log(`Found ${jobs.length} jobs`);
+        if (jobs.length > 0) {
+            console.log('First job:', jobs[0].title, 'at', jobs[0].company);
+        }
+    }
+}
+
+main().catch(console.error);

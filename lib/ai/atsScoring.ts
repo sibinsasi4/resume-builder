@@ -34,10 +34,18 @@ export function calculateATSScore(resumeData: ResumeData, resumeText: string): n
         (resumeData.certifications && resumeData.certifications.length > 0);
     if (hasProjectsOrCerts) score += 10;
 
-    // 4. Keyword Density (20 points)
+    // 4. Keyword Density & Relevance (20 points)
     const keywords = extractKeywords(resumeText);
-    if (keywords.length >= 20) score += 10;
-    if (keywords.length >= 40) score += 10;
+    const recognizedSkills = extractSkills(resumeText);
+
+    // Reward raw keyword density (10 points)
+    if (keywords.length >= 20) score += 5;
+    if (keywords.length >= 40) score += 5;
+
+    // Reward recognized industry skills (10 points)
+    // This ensures that using standard terms (e.g. "Six Sigma", "Patient Care") boosts the score
+    if (recognizedSkills.length >= 5) score += 5;
+    if (recognizedSkills.length >= 10) score += 5;
 
     // 5. Formatting & Readability (15 points)
     // Check for consistent date formats

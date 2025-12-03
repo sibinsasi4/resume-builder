@@ -19,7 +19,7 @@ export const PLANS: Record<PlanType, PlanLimits> = {
     },
     payperuse: {
         downloads: 1, // Per purchase
-        analyses: 1,
+        analyses: 3,
         templates: [], // All templates
         features: ['all_templates', 'no_watermark', 'ai_analysis'],
     },
@@ -73,10 +73,29 @@ export async function getUserSubscription(userId: string) {
         };
     }
 
+    // Check for expiry (specifically for payperuse 24h access)
+    if (subscription.plan === 'payperuse' && subscription.currentPeriodEnd && new Date() > subscription.currentPeriodEnd) {
+        return {
+            plan: 'free' as PlanType,
+            status: 'expired',
+            limits: PLANS.free,
+            subscription,
+        };
+    }
+
+    // Merge static plan limits with dynamic subscription limits
+    const staticLimits = PLANS[subscription.plan as PlanType];
+    const limits = {
+        ...staticLimits,
+        // Use DB limit if available, otherwise fallback to static plan limit
+        downloads: subscription.downloadsLimit ?? staticLimits.downloads,
+        analyses: subscription.analysesLimit ?? staticLimits.analyses,
+    };
+
     return {
         plan: subscription.plan as PlanType,
         status: subscription.status,
-        limits: PLANS[subscription.plan as PlanType],
+        limits,
         subscription,
     };
 }
@@ -246,6 +265,8 @@ export async function createSubscription(
 
     if (billingCycle === 'yearly') {
         periodEnd.setFullYear(periodEnd.getFullYear() + 1);
+    } else if (plan === 'payperuse') {
+        periodEnd.setHours(periodEnd.getHours() + 24); // 24 hours access
     } else {
         periodEnd.setMonth(periodEnd.getMonth() + 1);
     }

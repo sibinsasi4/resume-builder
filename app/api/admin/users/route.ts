@@ -1,52 +1,40 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-export async function GET() {
+export const dynamic = 'force-dynamic';
+
+export async function GET(req: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-
-        if (!session?.user?.id) {
+        if (!session?.user?.email || session.user.role !== 'admin') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Check if user is admin
-        const user = await prisma.user.findUnique({
-            where: { id: session.user.id },
-            select: { role: true }
-        });
-
-        if (user?.role !== 'admin') {
-            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-        }
-
-        // Get all users with resume count
         const users = await prisma.user.findMany({
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                role: true,
-                createdAt: true,
+            include: {
+                sessions: {
+                    orderBy: {
+                        lastActiveAt: 'desc'
+                    },
+                    take: 1
+                },
                 _count: {
                     select: {
-                        resumes: true
+                        resumes: true,
+                        downloads: true
                     }
                 }
             },
             orderBy: {
                 createdAt: 'desc'
-            },
-            take: 50 // Limit to recent 50 users
+            }
         });
 
         return NextResponse.json({ users });
     } catch (error) {
-        console.error('Admin users error:', error);
-        return NextResponse.json(
-            { error: 'Failed to fetch users' },
-            { status: 500 }
-        );
+        console.error('Error fetching users:', error);
+        return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
     }
 }

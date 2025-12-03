@@ -22,9 +22,36 @@ export default function TechTemplate({ data, colorTheme, fontFamily, fontSize }:
                 </div>
                 {(personalInfo.github || personalInfo.linkedin || personalInfo.website) && (
                     <div className="flex gap-4 text-sm mt-2" style={{ color: colorTheme.accent }}>
-                        {personalInfo.github && <span>💻 GitHub</span>}
-                        {personalInfo.linkedin && <span>🔗 LinkedIn</span>}
-                        {personalInfo.website && <span>🌐 Portfolio</span>}
+                        {personalInfo.github && (
+                            <a
+                                href={personalInfo.github.startsWith('http') ? personalInfo.github : `https://${personalInfo.github}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 hover:underline"
+                            >
+                                <span>💻</span> GitHub
+                            </a>
+                        )}
+                        {personalInfo.linkedin && (
+                            <a
+                                href={personalInfo.linkedin.startsWith('http') ? personalInfo.linkedin : `https://${personalInfo.linkedin}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 hover:underline"
+                            >
+                                <span>🔗</span> LinkedIn
+                            </a>
+                        )}
+                        {personalInfo.website && (
+                            <a
+                                href={personalInfo.website.startsWith('http') ? personalInfo.website : `https://${personalInfo.website}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-1 hover:underline"
+                            >
+                                <span>🌐</span> Portfolio
+                            </a>
+                        )}
                     </div>
                 )}
             </div>
