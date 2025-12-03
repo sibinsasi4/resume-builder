@@ -8,7 +8,7 @@ import { Check, Sparkles, Zap, Crown, Download, Infinity } from 'lucide-react';
 const plans = [
     {
         name: 'Pay Per Download',
-        price: 9,
+        price: 19,
         currency: '₹',
         period: 'per download',
         description: 'Perfect for one-time use',
@@ -132,8 +132,8 @@ export default function PricingPage() {
                         <div
                             key={index}
                             className={`relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 border transition-all duration-300 hover:scale-105 ${plan.popular
-                                    ? 'border-purple-500 shadow-2xl shadow-purple-500/30 scale-105'
-                                    : 'border-white/10 hover:border-white/20'
+                                ? 'border-purple-500 shadow-2xl shadow-purple-500/30 scale-105'
+                                : 'border-white/10 hover:border-white/20'
                                 }`}
                         >
                             {plan.popular && (
@@ -180,8 +180,8 @@ export default function PricingPage() {
                             <Link href={plan.href}>
                                 <Button
                                     className={`w-full mb-6 ${plan.popular
-                                            ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
-                                            : 'bg-white/10 hover:bg-white/20 border border-white/20'
+                                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
+                                        : 'bg-white/10 hover:bg-white/20 border border-white/20'
                                         }`}
                                 >
                                     {plan.cta}
@@ -232,13 +232,13 @@ export default function PricingPage() {
                         <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
                             <h3 className="font-semibold text-lg mb-2">How does pay-per-download work?</h3>
                             <p className="text-gray-400">
-                                Pay ₹9 each time you download a resume. Perfect if you only need one resume. No subscription required.
+                                Pay ₹19 each time you download a resume. Perfect if you only need one resume. No subscription required.
                             </p>
                         </div>
                         <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
                             <h3 className="font-semibold text-lg mb-2">What happens after 30 downloads?</h3>
                             <p className="text-gray-400">
-                                With the Monthly Pro plan, you get 30 downloads per month. After that, you can either wait for next month or purchase additional downloads at ₹9 each.
+                                With the Monthly Pro plan, you get 30 downloads per month. After that, you can either wait for next month or purchase additional downloads at ₹19 each.
                             </p>
                         </div>
                         <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
