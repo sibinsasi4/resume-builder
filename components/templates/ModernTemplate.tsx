@@ -4,13 +4,14 @@ interface ModernTemplateProps {
     data: ResumeData;
     colorTheme: ColorTheme;
     fontFamily: string;
+    fontSize: string;
 }
 
-export default function ModernTemplate({ data, colorTheme, fontFamily }: ModernTemplateProps) {
+export default function ModernTemplate({ data, colorTheme, fontFamily, fontSize }: ModernTemplateProps) {
     const { personalInfo, summary, experience, education, skills, projects, certifications } = data;
 
     return (
-        <div className={`bg-white shadow-lg ${fontFamily} max-w-[8.5in] mx-auto flex`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white shadow-lg ${fontFamily} ${fontSize} max-w-[8.5in] mx-auto flex`} style={{ minHeight: '11in' }}>
             {/* Left Sidebar */}
             <div className="w-1/3 p-6" style={{ backgroundColor: colorTheme.primary, color: 'white' }}>
                 <div className="mb-6">

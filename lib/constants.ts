@@ -77,6 +77,27 @@ export const fontConfigs: FontConfig[] = [
     },
 ];
 
+export const fontSizeConfigs = [
+    {
+        id: 'small',
+        name: 'Small',
+        className: 'text-sm',
+        scale: 0.85,
+    },
+    {
+        id: 'medium',
+        name: 'Medium',
+        className: 'text-base',
+        scale: 1.0,
+    },
+    {
+        id: 'large',
+        name: 'Large',
+        className: 'text-lg',
+        scale: 1.15,
+    },
+];
+
 export const templateConfigs: TemplateConfig[] = [
     {
         id: 'classic',
@@ -107,5 +128,65 @@ export const templateConfigs: TemplateConfig[] = [
         name: 'Professional',
         description: 'Polished corporate template for executive roles',
         preview: '/templates/professional.png',
+    },
+    {
+        id: 'executive',
+        name: 'Executive',
+        description: 'Leadership-focused with accent bar and structured sections',
+        preview: '/templates/executive.png',
+    },
+    {
+        id: 'tech',
+        name: 'Tech/Developer',
+        description: 'Code-inspired design with dark theme and project showcase',
+        preview: '/templates/tech.png',
+    },
+    {
+        id: 'academic',
+        name: 'Academic',
+        description: 'Scholarly format with serif typography for research roles',
+        preview: '/templates/academic.png',
+    },
+    {
+        id: 'designer',
+        name: 'Designer',
+        description: 'Creative portfolio layout with visual emphasis',
+        preview: '/templates/designer.png',
+    },
+    {
+        id: 'simple',
+        name: 'Simple',
+        description: 'Ultra-minimalist with maximum white space',
+        preview: '/templates/simple.png',
+    },
+    {
+        id: 'corporate',
+        name: 'Corporate',
+        description: 'Professional blue theme for business roles',
+        preview: '/templates/corporate.png',
+    },
+    {
+        id: 'elegant',
+        name: 'Elegant',
+        description: 'Sophisticated serif design with refined aesthetics',
+        preview: '/templates/elegant.png',
+    },
+    {
+        id: 'bold',
+        name: 'Bold',
+        description: 'Vibrant colors and eye-catching design',
+        preview: '/templates/bold.png',
+    },
+    {
+        id: 'timeline',
+        name: 'Timeline',
+        description: 'Visual chronological journey with timeline graphics',
+        preview: '/templates/timeline.png',
+    },
+    {
+        id: 'compact' as const,
+        name: 'Compact',
+        description: 'Maximum information density with two-column layout',
+        preview: '/templates/compact.png',
     },
 ];

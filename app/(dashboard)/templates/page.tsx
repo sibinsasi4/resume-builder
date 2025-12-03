@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { resumeTemplates } from '@/lib/resumeTemplates';
-import { Briefcase, TrendingUp, BarChart3, Palette, DollarSign, Check } from 'lucide-react';
+import { Briefcase, TrendingUp, BarChart3, Palette, DollarSign, Check, Search } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 const categoryIcons = {
@@ -14,10 +14,40 @@ const categoryIcons = {
     Sales: DollarSign,
 };
 
+const colorGradients: Record<string, string> = {
+    blue: 'from-blue-500 to-blue-600',
+    purple: 'from-purple-500 to-purple-600',
+    green: 'from-green-500 to-green-600',
+    pink: 'from-pink-500 to-pink-600',
+    orange: 'from-orange-500 to-orange-600',
+    slate: 'from-slate-600 to-slate-700',
+    indigo: 'from-indigo-500 to-indigo-600',
+    teal: 'from-teal-500 to-teal-600',
+    red: 'from-red-500 to-red-600',
+};
+
 export default function TemplateSelectionPage() {
     const router = useRouter();
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
     const [creating, setCreating] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
+    // Filter templates based on search and category
+    const filteredTemplates = useMemo(() => {
+        return resumeTemplates.filter(template => {
+            const matchesSearch = searchQuery === '' ||
+                template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                template.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                template.keywords.some(keyword => keyword.toLowerCase().includes(searchQuery.toLowerCase()));
+
+            const matchesCategory = selectedCategory === 'All' || template.category === selectedCategory;
+
+            return matchesSearch && matchesCategory;
+        });
+    }, [searchQuery, selectedCategory]);
+
+    const categories = ['All', ...Array.from(new Set(resumeTemplates.map(t => t.category)))];
 
     const handleUseTemplate = async (templateId: string) => {
         try {
@@ -72,85 +102,135 @@ export default function TemplateSelectionPage() {
                         </Button>
                     </div>
                 </div>
+
+                {/* Search and Filter Bar */}
+                <div className="container mx-auto px-4 py-4 border-t">
+                    <div className="flex flex-col md:flex-row gap-4">
+                        {/* Search Bar */}
+                        <div className="flex-1 relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <input
+                                type="text"
+                                placeholder="Search templates by role, skills, or keywords..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                        </div>
+
+                        {/* Category Filter */}
+                        <div className="flex gap-2 overflow-x-auto">
+                            {categories.map(category => (
+                                <button
+                                    key={category}
+                                    onClick={() => setSelectedCategory(category)}
+                                    className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${selectedCategory === category
+                                        ? 'bg-blue-600 text-white'
+                                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                                        }`}
+                                >
+                                    {category}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Results count */}
+                    <div className="mt-3 text-sm text-gray-600">
+                        Showing {filteredTemplates.length} of {resumeTemplates.length} templates
+                    </div>
+                </div>
             </div>
 
             {/* Templates Grid */}
             <div className="container mx-auto px-4 py-12">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {resumeTemplates.map((template) => {
-                        const Icon = categoryIcons[template.category as keyof typeof categoryIcons];
-                        const isSelected = selectedTemplate === template.id;
+                {filteredTemplates.length === 0 ? (
+                    <div className="text-center py-12">
+                        <p className="text-gray-500 text-lg">No templates found matching your search.</p>
+                        <button
+                            onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
+                            className="mt-4 text-blue-600 hover:underline"
+                        >
+                            Clear filters
+                        </button>
+                    </div>
+                ) : (
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {filteredTemplates.map((template) => {
+                            const Icon = categoryIcons[template.category as keyof typeof categoryIcons];
+                            const isSelected = selectedTemplate === template.id;
 
-                        return (
-                            <div
-                                key={template.id}
-                                className={`bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer ${isSelected ? 'ring-4 ring-blue-500 scale-105' : ''
-                                    }`}
-                                onClick={() => setSelectedTemplate(template.id)}
-                            >
-                                {/* Template Header */}
-                                <div className={`p-6 bg-gradient-to-br from-${template.color}-500 to-${template.color}-600 text-white`}>
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Icon className="w-5 h-5" />
-                                                <span className="text-sm font-medium opacity-90">
-                                                    {template.category}
-                                                </span>
+                            return (
+                                <div
+                                    key={template.id}
+                                    className={`bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer ${isSelected ? 'ring-4 ring-blue-500 scale-105' : ''
+                                        }`}
+                                    onClick={() => setSelectedTemplate(template.id)}
+                                >
+                                    {/* Template Header */}
+                                    <div className={`p-6 bg-gradient-to-br ${colorGradients[template.color] || 'from-blue-500 to-blue-600'} text-white`}>
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <Icon className="w-5 h-5" />
+                                                    <span className="text-sm font-medium opacity-90">
+                                                        {template.category}
+                                                    </span>
+                                                </div>
+                                                <h3 className="text-2xl font-bold mb-2">
+                                                    {template.name}
+                                                </h3>
+                                                <p className="text-sm opacity-90">
+                                                    {template.description}
+                                                </p>
                                             </div>
-                                            <h3 className="text-2xl font-bold mb-2">
-                                                {template.name}
-                                            </h3>
-                                            <p className="text-sm opacity-90">
-                                                {template.description}
-                                            </p>
-                                        </div>
-                                        {isSelected && (
-                                            <div className="bg-white text-blue-600 rounded-full p-1">
-                                                <Check className="w-5 h-5" />
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Template Preview Info */}
-                                <div className="p-6">
-                                    <div className="space-y-3">
-                                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                            <span>Complete profile information</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                            <span>{template.data.experience.length}+ years of experience</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                            <span>{template.data.skills.length}+ skill categories</span>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                            <span>Professional summary included</span>
+                                            {isSelected && (
+                                                <div className="bg-white text-blue-600 rounded-full p-1">
+                                                    <Check className="w-5 h-5" />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
-                                    <Button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleUseTemplate(template.id);
-                                        }}
-                                        disabled={creating}
-                                        className="w-full mt-6"
-                                    >
-                                        {creating && selectedTemplate === template.id
-                                            ? 'Creating...'
-                                            : 'Use This Template'}
-                                    </Button>
+                                    {/* Template Preview Info */}
+                                    <div className="p-6">
+                                        <div className="space-y-3">
+                                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                                <span>Complete profile information</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                                <span>{template.data.experience.length}+ years of experience</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                                <span>{template.data.skills.length}+ skill categories</span>
+                                            </div>
+                                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                                                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                                <span>Professional summary included</span>
+                                            </div>
+                                        </div>
+
+                                        <Button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleUseTemplate(template.id);
+                                            }}
+                                            disabled={creating}
+                                            className="w-full mt-6"
+                                        >
+                                            {creating && selectedTemplate === template.id
+                                                ? 'Creating...'
+                                                : 'Use This Template'}
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                            );
+                        })}
+                    </div>
+                )}
 
                 {/* Info Section */}
                 <div className="mt-12 bg-blue-50 border border-blue-200 rounded-xl p-6">

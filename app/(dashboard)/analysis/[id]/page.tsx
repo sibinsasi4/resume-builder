@@ -92,6 +92,33 @@ export default function AnalysisPage() {
         }
     };
 
+    const checkAnalysisAccess = async (): Promise<boolean> => {
+        try {
+            // Check user's subscription status
+            const response = await fetch('/api/user/subscription');
+            if (!response.ok) return false;
+
+            const { subscription } = await response.json();
+
+            // If no subscription or free plan, deny access
+            if (!subscription || subscription.plan === 'free') {
+                alert('⚠️ Premium Feature\n\nAI Analysis is available only for paid users.\n\nPlease upgrade to Pro or Premium plan to unlock detailed AI insights.');
+                return false;
+            }
+
+            // Check if subscription is active
+            if (subscription.status !== 'active' && subscription.status !== 'trialing') {
+                alert('⚠️ Subscription Inactive\n\nYour subscription is not active. Please renew to use AI Analysis.');
+                return false;
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error checking analysis access:', error);
+            return false;
+        }
+    };
+
     const runAnalysis = async () => {
         if (!jobDescription.trim()) {
             alert('Please enter a job description');
@@ -102,6 +129,10 @@ export default function AnalysisPage() {
             alert('Please upload a resume first');
             return;
         }
+
+        // Check access before running analysis
+        const hasAccess = await checkAnalysisAccess();
+        if (!hasAccess) return;
 
         try {
             setAnalyzing(true);
@@ -170,8 +201,8 @@ export default function AnalysisPage() {
                                         setUploadedText('');
                                     }}
                                     className={`flex-1 px-4 py-2 rounded-md font-medium transition-all ${!useUpload
-                                            ? 'bg-white text-blue-600 shadow-sm'
-                                            : 'text-gray-600 hover:text-gray-900'
+                                        ? 'bg-white text-blue-600 shadow-sm'
+                                        : 'text-gray-600 hover:text-gray-900'
                                         }`}
                                 >
                                     Use Existing Resume
@@ -179,8 +210,8 @@ export default function AnalysisPage() {
                                 <button
                                     onClick={() => setUseUpload(true)}
                                     className={`flex-1 px-4 py-2 rounded-md font-medium transition-all ${useUpload
-                                            ? 'bg-white text-blue-600 shadow-sm'
-                                            : 'text-gray-600 hover:text-gray-900'
+                                        ? 'bg-white text-blue-600 shadow-sm'
+                                        : 'text-gray-600 hover:text-gray-900'
                                         }`}
                                 >
                                     Upload Resume
@@ -200,10 +231,10 @@ export default function AnalysisPage() {
                                             onDragOver={handleDrag}
                                             onDrop={handleDrop}
                                             className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${dragActive
-                                                    ? 'border-blue-500 bg-blue-50'
-                                                    : uploadedFile
-                                                        ? 'border-green-500 bg-green-50'
-                                                        : 'border-gray-300 hover:border-gray-400'
+                                                ? 'border-blue-500 bg-blue-50'
+                                                : uploadedFile
+                                                    ? 'border-green-500 bg-green-50'
+                                                    : 'border-gray-300 hover:border-gray-400'
                                                 }`}
                                         >
                                             {uploading ? (

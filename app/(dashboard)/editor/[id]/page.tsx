@@ -11,6 +11,7 @@ import EducationEditor from '@/components/editor/EducationEditor';
 import ProjectsEditor from '@/components/editor/ProjectsEditor';
 import CertificationsEditor from '@/components/editor/CertificationsEditor';
 import AchievementsEditor from '@/components/editor/AchievementsEditor';
+import PricingModal from '@/components/subscription/PricingModal';
 import { ResumeData, TemplateType } from '@/lib/types';
 import { colorThemes, templateConfigs } from '@/lib/constants';
 
@@ -22,6 +23,8 @@ export default function EditorPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [activeTab, setActiveTab] = useState('personal');
+    const [showPricingModal, setShowPricingModal] = useState(false);
+    const [userSubscription, setUserSubscription] = useState<any>(null);
 
     useEffect(() => {
         if (status === 'unauthenticated') {
@@ -31,7 +34,20 @@ export default function EditorPage() {
 
     useEffect(() => {
         fetchResume();
+        fetchUserSubscription();
     }, [params.id]);
+
+    const fetchUserSubscription = async () => {
+        try {
+            const response = await fetch('/api/user/subscription');
+            if (response.ok) {
+                const data = await response.json();
+                setUserSubscription(data.subscription);
+            }
+        } catch (error) {
+            console.error('Failed to fetch subscription:', error);
+        }
+    };
 
     const fetchResume = async () => {
         try {
@@ -136,6 +152,65 @@ export default function EditorPage() {
         });
     };
 
+    const checkDownloadAccess = async (): Promise<boolean> => {
+        try {
+            // Check user's subscription status
+            const response = await fetch('/api/user/subscription');
+            if (!response.ok) return false;
+
+            const { subscription, usage } = await response.json();
+
+            // If no subscription or free plan, deny access
+            if (!subscription || subscription.plan === 'free') {
+                alert('⚠️ Download Restricted\n\nYou need to purchase a plan to download PDFs:\n• Pay ₹9 for single download\n• Subscribe to Monthly Pro (₹299) for 30 downloads/month');
+                return false;
+            }
+
+            // Check if subscription is active
+            if (subscription.status !== 'active' && subscription.status !== 'trialing') {
+                alert('⚠️ Subscription Inactive\n\nYour subscription is not active. Please renew to download.');
+                return false;
+            }
+
+            // For pay-per-use, check if they have downloads remaining
+            if (subscription.plan === 'payperuse') {
+                if (!usage || usage.downloadsUsed >= usage.downloadsLimit) {
+                    alert('⚠️ No Downloads Remaining\n\nYou have used all your downloads. Purchase another download for ₹9.');
+                    return false;
+                }
+            }
+
+            // For monthly plans, check download limit
+            if (subscription.plan === 'pro' || subscription.plan === 'premium') {
+                if (usage && usage.downloadsUsed >= usage.downloadsLimit) {
+                    alert('⚠️ Monthly Limit Reached\n\nYou have used all 30 downloads this month. Wait for next month or purchase additional downloads.');
+                    return false;
+                }
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error checking download access:', error);
+            alert('Error checking download access. Please try again.');
+            return false;
+        }
+    };
+
+    const trackDownload = async () => {
+        try {
+            await fetch('/api/downloads/track', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    resumeId: resume.id,
+                    templateType: resume.templateType
+                })
+            });
+        } catch (error) {
+            console.error('Failed to track download:', error);
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -190,11 +265,19 @@ export default function EditorPage() {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => {
-                                    // Save first, then download
-                                    saveResume().then(() => {
+                                onClick={async () => {
+                                    // Check if user has download access
+                                    const canDownload = await checkDownloadAccess();
+                                    if (canDownload) {
+                                        // Save first, then download
+                                        await saveResume();
+                                        // Track download
+                                        await trackDownload();
                                         window.print();
-                                    });
+                                    } else {
+                                        // Show pricing modal
+                                        setShowPricingModal(true);
+                                    }
                                 }}
                             >
                                 📥 Download PDF
@@ -264,6 +347,25 @@ export default function EditorPage() {
                                             }`}
                                     >
                                         {font === 'sans' ? 'Sans Serif' : font === 'serif' ? 'Serif' : 'Monospace'}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Font Size Selector */}
+                        <div className="bg-white rounded-lg shadow p-4">
+                            <h3 className="font-semibold mb-3">Text Size</h3>
+                            <div className="grid grid-cols-3 gap-2">
+                                {['small', 'medium', 'large'].map((size) => (
+                                    <button
+                                        key={size}
+                                        onClick={() => setResume({ ...resume, fontSize: size })}
+                                        className={`p-2 border-2 rounded-lg text-sm font-medium transition-all ${(resume.fontSize || 'medium') === size
+                                            ? 'border-blue-600 bg-blue-50'
+                                            : 'border-gray-200 hover:border-blue-300'
+                                            }`}
+                                    >
+                                        {size.charAt(0).toUpperCase() + size.slice(1)}
                                     </button>
                                 ))}
                             </div>
@@ -514,12 +616,69 @@ export default function EditorPage() {
                                     data={resumeData}
                                     colorThemeId={resume.colorTheme}
                                     fontFamily={resume.fontFamily}
+                                    fontSize={resume.fontSize || 'medium'}
                                 />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Pricing Modal */}
+            <PricingModal
+                isOpen={showPricingModal}
+                onClose={() => setShowPricingModal(false)}
+                onSelectPlan={async (plan: string, gateway: 'razorpay' | 'stripe') => {
+                    // Handle payment selection (same as dashboard)
+                    try {
+                        if (gateway === 'razorpay') {
+                            const response = await fetch('/api/payments/razorpay/create-order', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ plan }),
+                            });
+                            const { orderId, amount, currency, keyId } = await response.json();
+                            const script = document.createElement('script');
+                            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+                            script.async = true;
+                            document.body.appendChild(script);
+                            script.onload = () => {
+                                const options = {
+                                    key: keyId,
+                                    amount,
+                                    currency,
+                                    order_id: orderId,
+                                    name: 'VISISH',
+                                    description: `${plan} Plan`,
+                                    handler: async (response: any) => {
+                                        await fetch('/api/payments/razorpay/verify', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ ...response, plan, billingCycle: 'monthly' }),
+                                        });
+                                        setShowPricingModal(false);
+                                        fetchUserSubscription();
+                                        alert('Payment successful! You can now download your resume.');
+                                    },
+                                };
+                                const razorpay = new (window as any).Razorpay(options);
+                                razorpay.open();
+                            };
+                        } else {
+                            const response = await fetch('/api/payments/stripe/checkout', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ plan, billingCycle: 'monthly' }),
+                            });
+                            const { url } = await response.json();
+                            window.location.href = url;
+                        }
+                    } catch (error) {
+                        console.error('Payment error:', error);
+                        alert('Payment failed. Please try again.');
+                    }
+                }}
+            />
         </div>
     );
 }

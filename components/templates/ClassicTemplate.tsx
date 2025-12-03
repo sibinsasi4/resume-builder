@@ -4,13 +4,14 @@ interface ClassicTemplateProps {
     data: ResumeData;
     colorTheme: ColorTheme;
     fontFamily: string;
+    fontSize: string;
 }
 
-export default function ClassicTemplate({ data, colorTheme, fontFamily }: ClassicTemplateProps) {
+export default function ClassicTemplate({ data, colorTheme, fontFamily, fontSize }: ClassicTemplateProps) {
     const { personalInfo, summary, experience, education, skills, projects, certifications } = data;
 
     return (
-        <div className={`bg-white p-8 shadow-lg ${fontFamily} max-w-[8.5in] mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white p-8 shadow-lg ${fontFamily} ${fontSize} max-w-[8.5in] mx-auto`} style={{ minHeight: '11in' }}>
             {/* Header */}
             <div className="border-b-4 pb-4 mb-6" style={{ borderColor: colorTheme.primary }}>
                 <h1 className="text-4xl font-bold mb-2" style={{ color: colorTheme.primary }}>

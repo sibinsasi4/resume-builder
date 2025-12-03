@@ -1,5 +1,31 @@
-/* Print Styles for Resume Download */
+/* Print Styles for Resume Download - Optimized for A4 Multi-Page Support */
 @media print {
+
+    /* CRITICAL: Force browsers to print background colors */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
+    /* Page setup for A4 with proper margins */
+    @page {
+        size: A4 portrait;
+        margin: 10mm 12mm;
+        /* Top/Bottom: 10mm, Left/Right: 12mm */
+    }
+
+    /* Reset body and html for proper pagination */
+    html,
+    body {
+        width: 100% !important;
+        height: auto !important;
+        /* Allow multiple pages */
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        /* Allow content to flow to next page */
+    }
 
     /* Hide everything except the resume preview */
     body * {
@@ -12,31 +38,173 @@
         visibility: visible;
     }
 
-    /* Position resume at top of page */
+    /* Position resume properly */
     #resume-preview {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        transform: none !important;
+        /* Reset any scaling */
+        /* Allow content to flow */
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        /* Allow pagination */
+        page-break-before: avoid !important;
     }
 
-    /* Remove any scaling/transforms */
+    /* Optimize resume container for A4 */
     #resume-preview>div {
         transform: none !important;
+        transform-origin: top left !important;
         width: 100% !important;
-        max-width: 8.5in !important;
-        margin: 0 auto !important;
+        max-width: none !important;
+        height: auto !important;
+        min-height: auto !important;
+        /* Override inline min-height */
+        /* Allow content to flow */
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+        /* Allow pagination */
+        position: relative !important;
     }
 
-    /* Page setup */
-    @page {
-        size: letter;
-        margin: 0;
-    }
-
-    /* Remove shadows and borders */
+    /* Remove shadows and unnecessary borders for print */
     #resume-preview * {
         box-shadow: none !important;
-        border-radius: 0 !important;
+        text-shadow: none !important;
+    }
+
+    /* Force auto height on all children to prevent fixed height issues */
+    #resume-preview * {
+        min-height: 0 !important;
+    }
+
+    /* Intelligent page break controls */
+
+    /* Avoid breaking inside these elements */
+    #resume-preview section,
+    #resume-preview .experience-item,
+    #resume-preview .education-item,
+    #resume-preview .project-item,
+    #resume-preview article,
+    #resume-preview .skill-group,
+    #resume-preview .mb-6,
+    #resume-preview .mb-5 {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    /* Keep headings with their content */
+    #resume-preview h1,
+    #resume-preview h2,
+    #resume-preview h3,
+    #resume-preview h4 {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    /* Prevent orphans and widows */
+    #resume-preview p,
+    #resume-preview li {
+        orphans: 3 !important;
+        widows: 3 !important;
+    }
+
+    /* Ensure lists stay together when possible */
+    #resume-preview ul,
+    #resume-preview ol {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    /* Individual list items can break if needed */
+    #resume-preview li {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    /* Optimize spacing for print */
+    #resume-preview {
+        font-size: 9pt !important;
+        /* Reduce font size slightly to fit more */
+        line-height: 1.3 !important;
+    }
+
+    /* Reduce excessive margins/padding for print */
+    #resume-preview section,
+    #resume-preview div[class*="mb-"] {
+        margin-bottom: 4mm !important;
+    }
+
+    #resume-preview h1 {
+        margin-bottom: 2mm !important;
+        font-size: 24pt !important;
+    }
+
+    #resume-preview h2 {
+        margin-top: 3mm !important;
+        margin-bottom: 2mm !important;
+        font-size: 14pt !important;
+        padding-bottom: 1mm !important;
+    }
+
+    #resume-preview h3 {
+        margin-top: 2mm !important;
+        margin-bottom: 1mm !important;
+        font-size: 11pt !important;
+    }
+
+    /* Optimize paragraph spacing */
+    #resume-preview p {
+        margin-bottom: 1.5mm !important;
+    }
+
+    /* Ensure proper spacing for experience/education items */
+    #resume-preview .experience-item,
+    #resume-preview .education-item {
+        margin-bottom: 3mm !important;
+    }
+
+    /* Hide any print buttons or UI elements */
+    .no-print,
+    button,
+    .print-hide {
+        display: none !important;
+    }
+
+    /* Ensure links are visible in print */
+    #resume-preview a {
+        text-decoration: none !important;
+        color: inherit !important;
+    }
+
+    /* Show URLs for important links if needed */
+    #resume-preview a[href^="http"]:after {
+        content: "" !important;
+        /* Don't show URLs in resume */
+    }
+
+    /* Optimize images for print */
+    #resume-preview img {
+        max-width: 100% !important;
+        height: auto !important;
+        page-break-inside: avoid !important;
+    }
+
+    /* Page numbering (optional - can be enabled if needed) */
+    @page {
+        @bottom-right {
+            content: counter(page) " of " counter(pages);
+            font-size: 8pt;
+            color: #666;
+        }
     }
 }

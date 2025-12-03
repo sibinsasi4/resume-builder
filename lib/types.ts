@@ -80,7 +80,22 @@ export interface Language {
 
 // Template Types
 
-export type TemplateType = 'classic' | 'modern' | 'creative' | 'minimal' | 'professional';
+export type TemplateType =
+    | 'classic'
+    | 'modern'
+    | 'creative'
+    | 'minimal'
+    | 'professional'
+    | 'executive'
+    | 'tech'
+    | 'academic'
+    | 'designer'
+    | 'simple'
+    | 'corporate'
+    | 'elegant'
+    | 'bold'
+    | 'timeline'
+    | 'compact';
 
 export interface TemplateConfig {
     id: TemplateType;
