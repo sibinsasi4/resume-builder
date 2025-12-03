@@ -17,8 +17,9 @@ export async function GET() {
             users,
             env: {
                 hasDatabaseUrl: !!process.env.DATABASE_URL,
+                hasCustomUrl: !!process.env.CUSTOM_DATABASE_URL,
                 nodeEnv: process.env.NODE_ENV,
-                dbHost: process.env.DATABASE_URL?.split('@')[1]?.split('/')[0] || 'unknown'
+                dbHost: (process.env.CUSTOM_DATABASE_URL || process.env.DATABASE_URL)?.split('@')[1]?.split('/')[0] || 'unknown'
             }
         });
     } catch (error: any) {
