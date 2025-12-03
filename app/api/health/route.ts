@@ -17,7 +17,8 @@ export async function GET() {
             users,
             env: {
                 hasDatabaseUrl: !!process.env.DATABASE_URL,
-                nodeEnv: process.env.NODE_ENV
+                nodeEnv: process.env.NODE_ENV,
+                dbHost: process.env.DATABASE_URL?.split('@')[1]?.split('/')[0] || 'unknown'
             }
         });
     } catch (error: any) {
