@@ -49,6 +49,24 @@ export default function HomePage() {
             title: "One-Click Export",
             description: "Download print-ready PDFs that pass ATS systems",
             color: "from-pink-500 to-rose-500"
+        },
+        {
+            icon: <FileText className="w-8 h-8" />,
+            title: "AI Cover Letters",
+            description: "Generate tailored cover letters for any job description in seconds",
+            color: "from-orange-400 to-amber-400"
+        },
+        {
+            icon: <Target className="w-8 h-8" />,
+            title: "LinkedIn Optimizer",
+            description: "Get AI suggestions to optimize your LinkedIn profile for recruiters",
+            color: "from-blue-600 to-indigo-600"
+        },
+        {
+            icon: <Sparkles className="w-8 h-8" />,
+            title: "Mock Interview Prep",
+            description: "Practice with AI-generated questions and get real-time feedback",
+            color: "from-green-400 to-emerald-500"
         }
     ];
 
@@ -59,29 +77,7 @@ export default function HomePage() {
         { value: "24/7", label: "Support" }
     ];
 
-    const testimonials = [
-        {
-            name: "Sarah Johnson",
-            role: "Software Engineer",
-            company: "Google",
-            image: "👩‍💻",
-            quote: "VISISH helped me land my dream job at Google! The AI analysis was spot-on."
-        },
-        {
-            name: "Michael Chen",
-            role: "Product Manager",
-            company: "Amazon",
-            image: "👨‍💼",
-            quote: "The templates are beautiful and the ATS optimization actually works. Highly recommend!"
-        },
-        {
-            name: "Emily Rodriguez",
-            role: "UX Designer",
-            company: "Apple",
-            image: "👩‍🎨",
-            quote: "Best resume builder I've used. Clean, professional, and incredibly easy to use."
-        }
-    ];
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-hidden">
@@ -108,7 +104,6 @@ export default function HomePage() {
                         <div className="hidden md:flex items-center gap-8">
                             <Link href="#features" className="hover:text-blue-400 transition-colors">Features</Link>
                             <Link href="/pricing" className="hover:text-blue-400 transition-colors">Pricing</Link>
-                            <Link href="#testimonials" className="hover:text-blue-400 transition-colors">Reviews</Link>
                             <Link href="/login" className="hover:text-blue-400 transition-colors">Sign In</Link>
                             <Link href="/signup"
                                 className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105">
@@ -195,37 +190,7 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Testimonials */}
-            <section id="testimonials" className="relative z-10 container mx-auto px-6 py-24">
-                <div className="text-center mb-16">
-                    <h2 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                        Loved by Professionals
-                    </h2>
-                    <p className="text-xl text-gray-400">See what our users have to say</p>
-                </div>
 
-                <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-                    {testimonials.map((testimonial, index) => (
-                        <div key={index}
-                            className="bg-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/10 hover:bg-white/10 transition-all duration-300 hover:scale-105">
-                            <div className="flex items-center gap-4 mb-6">
-                                <div className="text-5xl">{testimonial.image}</div>
-                                <div>
-                                    <div className="font-bold text-lg">{testimonial.name}</div>
-                                    <div className="text-sm text-gray-400">{testimonial.role}</div>
-                                    <div className="text-sm text-purple-400">{testimonial.company}</div>
-                                </div>
-                            </div>
-                            <div className="flex gap-1 mb-4">
-                                {[...Array(5)].map((_, i) => (
-                                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                                ))}
-                            </div>
-                            <p className="text-gray-300 italic">"{testimonial.quote}"</p>
-                        </div>
-                    ))}
-                </div>
-            </section>
 
             {/* CTA Section */}
             <section className="relative z-10 container mx-auto px-6 py-24">

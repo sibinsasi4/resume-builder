@@ -5,6 +5,9 @@ import { Mic, Play, CheckCircle, Loader2, MessageSquare } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import DashboardNavbar from '@/components/dashboard/DashboardNavbar';
+import PricingModal from '@/components/subscription/PricingModal';
+import { usePayment } from '@/hooks/usePayment';
+import { useEffect } from 'react';
 
 export default function InterviewPrepPage() {
     const [loading, setLoading] = useState(false);
@@ -16,6 +19,26 @@ export default function InterviewPrepPage() {
     const [answers, setAnswers] = useState<string[]>([]);
     const [analysis, setAnalysis] = useState<any>(null);
     const [analyzing, setAnalyzing] = useState(false);
+    const [hasAccess, setHasAccess] = useState(false);
+    const [showPricing, setShowPricing] = useState(false);
+    const { handleSelectPlan } = usePayment();
+
+    useEffect(() => {
+        checkAccess();
+    }, []);
+
+    const checkAccess = async () => {
+        try {
+            const res = await fetch('/api/subscription/status');
+            const data = await res.json();
+            // Check if plan is pro/premium or has specific feature
+            if (data.limits?.features?.includes('interview_prep')) {
+                setHasAccess(true);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     // Voice State
     const [isSpeaking, setIsSpeaking] = useState(false);
@@ -58,6 +81,12 @@ export default function InterviewPrepPage() {
 
     const handleStart = async () => {
         if (!jobTitle) return;
+
+        if (!hasAccess) {
+            setShowPricing(true);
+            return;
+        }
+
         setLoading(true);
         try {
             const response = await fetch('/api/ai/interview', {
@@ -258,7 +287,7 @@ export default function InterviewPrepPage() {
                                 <div className="h-16 w-px bg-gray-300"></div>
                                 <div className="text-center">
                                     <div className={`text-3xl font-bold mb-1 ${analysis.recommendation.includes('Strong') ? 'text-green-600' :
-                                            analysis.recommendation.includes('No') ? 'text-red-600' : 'text-blue-600'
+                                        analysis.recommendation.includes('No') ? 'text-red-600' : 'text-blue-600'
                                         }`}>
                                         {analysis.recommendation}
                                     </div>
@@ -307,6 +336,12 @@ export default function InterviewPrepPage() {
                     </div>
                 )}
             </div>
+
+            <PricingModal
+                isOpen={showPricing}
+                onClose={() => setShowPricing(false)}
+                onSelectPlan={handleSelectPlan}
+            />
         </div>
     );
 }

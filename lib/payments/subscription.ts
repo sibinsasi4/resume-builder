@@ -21,7 +21,14 @@ export const PLANS: Record<PlanType, PlanLimits> = {
         downloads: 1, // Per purchase
         analyses: 3,
         templates: [], // All templates
-        features: ['all_templates', 'no_watermark', 'ai_analysis'],
+        features: [
+            'all_templates',
+            'no_watermark',
+            'ai_analysis',
+            'cover_letter',
+            'linkedin_optimization',
+            'interview_prep',
+        ],
     },
     pro: {
         downloads: 30, // Per month
