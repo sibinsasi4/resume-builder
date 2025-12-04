@@ -20,6 +20,8 @@ interface TemplateRendererProps {
     colorThemeId: string;
     fontFamily: string;
     fontSize?: string;
+    sectionOrder?: string[];
+    onReorder?: (newOrder: string[]) => void;
 }
 
 export default function TemplateRenderer({
@@ -28,6 +30,8 @@ export default function TemplateRenderer({
     colorThemeId,
     fontFamily,
     fontSize = 'medium',
+    sectionOrder = [],
+    onReorder
 }: TemplateRendererProps) {
     const colorTheme = colorThemes.find((theme) => theme.id === colorThemeId) || colorThemes[0];
 
@@ -40,42 +44,51 @@ export default function TemplateRenderer({
     const sizeConfig = fontSizeConfigs.find((size) => size.id === fontSize) || fontSizeConfigs[1];
     const sizeClass = sizeConfig.className;
 
+    const commonProps = {
+        data,
+        colorTheme,
+        fontFamily: fontClass,
+        fontSize: sizeClass,
+        sectionOrder,
+        onReorder
+    };
+
     const TemplateComponent = () => {
         switch (templateType) {
             case 'classic':
-                return <ClassicTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <ClassicTemplate {...commonProps} />;
             case 'modern':
-                return <ModernTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <ModernTemplate {...commonProps} />;
             case 'creative':
-                return <ClassicTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <ClassicTemplate {...commonProps} />;
             case 'minimal':
-                return <ClassicTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <ClassicTemplate {...commonProps} />;
             case 'professional':
-                return <ModernTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <ModernTemplate {...commonProps} />;
             case 'executive':
-                return <ExecutiveTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <ExecutiveTemplate {...commonProps} />;
             case 'tech':
-                return <TechTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <TechTemplate {...commonProps} />;
             case 'academic':
-                return <AcademicTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <AcademicTemplate {...commonProps} />;
             case 'designer':
-                return <DesignerTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <DesignerTemplate {...commonProps} />;
             case 'simple':
-                return <SimpleTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <SimpleTemplate {...commonProps} />;
             case 'corporate':
-                return <CorporateTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <CorporateTemplate {...commonProps} />;
             case 'elegant':
-                return <ElegantTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <ElegantTemplate {...commonProps} />;
             case 'bold':
-                return <BoldTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <BoldTemplate {...commonProps} />;
             case 'timeline':
-                return <TimelineTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <TimelineTemplate {...commonProps} />;
             case 'compact':
-                return <CompactTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <CompactTemplate {...commonProps} />;
             case 'premium':
-                return <PremiumTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <PremiumTemplate {...commonProps} />;
             default:
-                return <ClassicTemplate data={data} colorTheme={colorTheme} fontFamily={fontClass} fontSize={sizeClass} />;
+                return <ClassicTemplate {...commonProps} />;
         }
     };
 

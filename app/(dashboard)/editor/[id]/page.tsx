@@ -11,6 +11,7 @@ import EducationEditor from '@/components/editor/EducationEditor';
 import ProjectsEditor from '@/components/editor/ProjectsEditor';
 import CertificationsEditor from '@/components/editor/CertificationsEditor';
 import AchievementsEditor from '@/components/editor/AchievementsEditor';
+import QualityScore from '@/components/editor/QualityScore';
 import PricingModal from '@/components/subscription/PricingModal';
 import { ResumeData, TemplateType } from '@/lib/types';
 import { colorThemes, templateConfigs } from '@/lib/constants';
@@ -97,7 +98,17 @@ export default function EditorPage() {
                 parsedData.skills = Array.isArray(parsedData.skills) ? parsedData.skills : [];
                 parsedData.projects = Array.isArray(parsedData.projects) ? parsedData.projects : [];
                 parsedData.certifications = Array.isArray(parsedData.certifications) ? parsedData.certifications : [];
+                parsedData.certifications = Array.isArray(parsedData.certifications) ? parsedData.certifications : [];
                 parsedData.achievements = Array.isArray(parsedData.achievements) ? parsedData.achievements : [];
+                parsedData.sectionOrder = Array.isArray(parsedData.sectionOrder) ? parsedData.sectionOrder : [
+                    'summary',
+                    'experience',
+                    'education',
+                    'skills',
+                    'projects',
+                    'certifications',
+                    'achievements'
+                ];
 
                 // Set resume with parsed data
                 setResume({
@@ -303,6 +314,9 @@ export default function EditorPage() {
                 <div className="grid lg:grid-cols-2 gap-6">
                     {/* Left Panel - Controls */}
                     <div className="space-y-4">
+                        {/* Quality Score */}
+                        <QualityScore data={resumeData} />
+
                         {/* Template Selector */}
                         <div className="bg-white rounded-lg shadow p-4">
                             <h3 className="font-semibold mb-3">Template</h3>
@@ -643,6 +657,11 @@ export default function EditorPage() {
                                     colorThemeId={resume.colorTheme}
                                     fontFamily={resume.fontFamily}
                                     fontSize={resume.fontSize || 'medium'}
+                                    sectionOrder={resumeData.sectionOrder || []}
+                                    onReorder={(newOrder) => setResume({
+                                        ...resume,
+                                        data: { ...resumeData, sectionOrder: newOrder }
+                                    })}
                                 />
                             </div>
                         </div>

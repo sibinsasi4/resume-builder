@@ -11,6 +11,7 @@ export interface ResumeData {
     achievements: string[];
     languages?: Language[];
     hobbies?: string[];
+    sectionOrder?: string[];
 }
 
 export interface PersonalInfo {
