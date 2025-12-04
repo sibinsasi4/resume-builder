@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { signInSchema, SignInInput } from '@/lib/validations';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Eye, EyeOff } from 'lucide-react';
 
 function LoginForm() {
     const router = useRouter();
@@ -17,6 +17,7 @@ function LoginForm() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [demoLoading, setDemoLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const registered = searchParams.get('registered');
 
@@ -129,11 +130,24 @@ function LoginForm() {
 
                         <Input
                             label="Password"
-                            type="password"
+                            type={showPassword ? 'text' : 'password'}
                             {...register('password')}
                             error={errors.password?.message}
                             placeholder="••••••••"
                             className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                            suffix={
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="hover:text-gray-300 transition-colors focus:outline-none"
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="w-5 h-5" />
+                                    ) : (
+                                        <Eye className="w-5 h-5" />
+                                    )}
+                                </button>
+                            }
                         />
 
                         <div className="flex justify-end">

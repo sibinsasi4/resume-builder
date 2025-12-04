@@ -62,3 +62,32 @@ export async function GET(
         return NextResponse.json({ error: 'Failed to fetch user details' }, { status: 500 });
     }
 }
+
+export async function PATCH(
+    req: Request,
+    { params }: { params: { id: string } }
+) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.email || session.user.role !== 'admin') {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const body = await req.json();
+        const { role } = body;
+
+        if (role !== 'user' && role !== 'admin') {
+            return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
+        }
+
+        const updatedUser = await prisma.user.update({
+            where: { id: params.id },
+            data: { role },
+        });
+
+        return NextResponse.json({ user: updatedUser });
+    } catch (error) {
+        console.error('Error updating user role:', error);
+        return NextResponse.json({ error: 'Failed to update user role' }, { status: 500 });
+    }
+}

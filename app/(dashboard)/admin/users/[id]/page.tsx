@@ -146,9 +146,37 @@ export default function UserDetailsPage({ params }: { params: { id: string } }) 
                                 </div>
                             </div>
                         </div>
-                        <Button onClick={() => setShowGrantModal(true)}>
-                            <Gift className="w-4 h-4 mr-2" /> Grant Downloads
-                        </Button>
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                onClick={async () => {
+                                    if (!confirm(`Are you sure you want to make ${user.name} an Admin?`)) return;
+                                    try {
+                                        const response = await fetch(`/api/admin/users/${user.id}`, {
+                                            method: 'PATCH',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ role: user.role === 'admin' ? 'user' : 'admin' }),
+                                        });
+                                        if (response.ok) {
+                                            alert('User role updated successfully');
+                                            fetchUserDetails();
+                                        } else {
+                                            alert('Failed to update role');
+                                        }
+                                    } catch (error) {
+                                        console.error('Error updating role:', error);
+                                        alert('Error updating role');
+                                    }
+                                }}
+                                className={user.role === 'admin' ? 'text-red-600 hover:bg-red-50 border-red-200' : 'text-purple-600 hover:bg-purple-50 border-purple-200'}
+                            >
+                                <Shield className="w-4 h-4 mr-2" />
+                                {user.role === 'admin' ? 'Revoke Admin' : 'Make Admin'}
+                            </Button>
+                            <Button onClick={() => setShowGrantModal(true)}>
+                                <Gift className="w-4 h-4 mr-2" /> Grant Downloads
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
