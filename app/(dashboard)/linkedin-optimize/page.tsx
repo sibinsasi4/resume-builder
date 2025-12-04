@@ -6,6 +6,8 @@ import { Linkedin, Sparkles, Copy, Loader2, ArrowRight } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import DashboardNavbar from '@/components/dashboard/DashboardNavbar';
+import PricingModal from '@/components/subscription/PricingModal';
+import { usePayment } from '@/hooks/usePayment';
 
 export default function LinkedInOptimizerPage() {
     const router = useRouter();
@@ -13,6 +15,25 @@ export default function LinkedInOptimizerPage() {
     const [resumes, setResumes] = useState<any[]>([]);
     const [selectedResumeId, setSelectedResumeId] = useState('');
     const [optimization, setOptimization] = useState<any>(null);
+    const [hasAccess, setHasAccess] = useState(false);
+    const [showPricing, setShowPricing] = useState(false);
+    const { handleSelectPlan } = usePayment();
+
+    useEffect(() => {
+        checkAccess();
+    }, []);
+
+    const checkAccess = async () => {
+        try {
+            const res = await fetch('/api/subscription/status');
+            const data = await res.json();
+            if (data.limits?.features?.includes('linkedin_optimization')) {
+                setHasAccess(true);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     useEffect(() => {
         fetch('/api/resumes')
@@ -24,6 +45,12 @@ export default function LinkedInOptimizerPage() {
 
     const handleGenerate = async () => {
         if (!selectedResumeId) return;
+
+        if (!hasAccess) {
+            setShowPricing(true);
+            return;
+        }
+
         setLoading(true);
         setOptimization(null);
 
@@ -181,6 +208,12 @@ export default function LinkedInOptimizerPage() {
                     </div>
                 </div>
             </div>
+
+            <PricingModal
+                isOpen={showPricing}
+                onClose={() => setShowPricing(false)}
+                onSelectPlan={handleSelectPlan}
+            />
         </div>
     );
 }

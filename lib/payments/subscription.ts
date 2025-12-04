@@ -69,6 +69,21 @@ export const PLANS: Record<PlanType, PlanLimits> = {
  * Get user's current subscription and plan
  */
 export async function getUserSubscription(userId: string) {
+    // Check if user is admin
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { role: true },
+    });
+
+    if (user?.role === 'admin') {
+        return {
+            plan: 'premium' as PlanType,
+            status: 'active',
+            limits: PLANS.premium,
+            subscription: null,
+        };
+    }
+
     const subscription = await prisma.subscription.findUnique({
         where: { userId },
     });
