@@ -19,11 +19,13 @@ export default function NewCoverLetterPage() {
         companyName: '',
         jobDescription: '',
 
-        const [hasAccess, setHasAccess] = useState(false);
-        const [showPricing, setShowPricing] = useState(false);
-        const { handleSelectPlan } = usePayment();
+    });
 
-        useEffect(() => {
+    const [hasAccess, setHasAccess] = useState(false);
+    const [showPricing, setShowPricing] = useState(false);
+    const { handleSelectPlan } = usePayment();
+
+    useEffect(() => {
         checkAccess();
     }, []);
 
