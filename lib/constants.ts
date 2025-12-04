@@ -189,4 +189,10 @@ export const templateConfigs: TemplateConfig[] = [
         description: 'Maximum information density with two-column layout',
         preview: '/templates/compact.png',
     },
+    {
+        id: 'premium' as const,
+        name: 'Premium',
+        description: 'High-end design with elegant typography and layout',
+        preview: '/templates/premium.png',
+    },
 ];

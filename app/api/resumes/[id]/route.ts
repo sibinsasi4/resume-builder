@@ -20,11 +20,12 @@ export async function GET(
             );
         }
 
+        const whereClause = session.user.role === 'admin'
+            ? { id: params.id }
+            : { id: params.id, userId: session.user.id };
+
         const resume = await prisma.resume.findFirst({
-            where: {
-                id: params.id,
-                userId: session.user.id,
-            },
+            where: whereClause,
         });
 
         if (!resume) {
@@ -61,11 +62,12 @@ export async function PUT(
 
         const body = await req.json();
 
+        const whereClause = session.user.role === 'admin'
+            ? { id: params.id }
+            : { id: params.id, userId: session.user.id };
+
         const resume = await prisma.resume.updateMany({
-            where: {
-                id: params.id,
-                userId: session.user.id,
-            },
+            where: whereClause,
             data: {
                 title: body.title,
                 templateType: body.templateType,
@@ -107,11 +109,12 @@ export async function DELETE(
             );
         }
 
+        const whereClause = session.user.role === 'admin'
+            ? { id: params.id }
+            : { id: params.id, userId: session.user.id };
+
         const resume = await prisma.resume.deleteMany({
-            where: {
-                id: params.id,
-                userId: session.user.id,
-            },
+            where: whereClause,
         });
 
         if (resume.count === 0) {

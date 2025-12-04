@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { v2 as cloudinary } from 'cloudinary';
 import { authOptions } from '@/lib/auth';
 import { parseResumeFile, validateFileSize, validateFileType } from '@/lib/resumeParser';
+import { parseResumeStructure } from '@/lib/services/resumeStructureParser';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,10 +59,21 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        // 3. Parse Structure
+        console.log('--- Raw Resume Text ---');
+        console.log(resumeText.substring(0, 500) + '...'); // Log first 500 chars
+        console.log('-----------------------');
+
+        const structuredData = parseResumeStructure(resumeText);
+
+        console.log('--- Structured Data ---');
+        console.log(JSON.stringify(structuredData, null, 2));
+        console.log('-----------------------');
+
         return NextResponse.json({
-            success: true,
             text: resumeText,
-            fileName: file.name,
+            structuredData,
+            fileName: file.name
         });
     } catch (error) {
         console.error('Upload error:', error);

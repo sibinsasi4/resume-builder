@@ -11,7 +11,7 @@ export default function ElegantTemplate({ data, colorTheme, fontFamily, fontSize
     const { personalInfo, summary, experience, education, skills, projects, certifications } = data;
 
     return (
-        <div className={`bg-white p-10 font-serif ${fontSize} max-w-[8.5in] mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white p-10 font-serif ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
             {/* Header */}
             <div className="text-center mb-8 pb-6 border-b" style={{ borderColor: colorTheme.primary }}>
                 <h1 className="text-4xl font-light mb-3 tracking-wide" style={{ color: colorTheme.primary }}>

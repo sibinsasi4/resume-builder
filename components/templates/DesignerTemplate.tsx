@@ -11,7 +11,7 @@ export default function DesignerTemplate({ data, colorTheme, fontFamily, fontSiz
     const { personalInfo, summary, experience, education, skills, projects, certifications } = data;
 
     return (
-        <div className={`bg-white ${fontFamily} ${fontSize} max-w-[8.5in] mx-auto flex`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white ${fontFamily} ${fontSize} w-full mx-auto flex`} style={{ minHeight: '11in' }}>
             {/* Left Column - Narrow */}
             <div className="w-1/4 p-6" style={{ backgroundColor: colorTheme.primary, color: 'white' }}>
                 <div className="mb-6">

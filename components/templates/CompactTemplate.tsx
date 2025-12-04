@@ -11,7 +11,7 @@ export default function CompactTemplate({ data, colorTheme, fontFamily, fontSize
     const { personalInfo, summary, experience, education, skills, projects, certifications } = data;
 
     return (
-        <div className={`bg-white p-6 ${fontFamily} ${fontSize} max-w-[8.5in] mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white p-6 ${fontFamily} ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
             {/* Compact Header */}
             <div className="mb-4 pb-3 border-b-2" style={{ borderColor: colorTheme.primary }}>
                 <h1 className="text-3xl font-bold" style={{ color: colorTheme.primary }}>

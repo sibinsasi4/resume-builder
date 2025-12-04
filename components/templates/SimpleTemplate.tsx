@@ -11,7 +11,7 @@ export default function SimpleTemplate({ data, colorTheme, fontFamily, fontSize 
     const { personalInfo, summary, experience, education, skills, projects, certifications } = data;
 
     return (
-        <div className={`bg-white p-12 ${fontFamily} ${fontSize} max-w-[8.5in] mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white p-12 ${fontFamily} ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
             {/* Header - Ultra Simple */}
             <div className="mb-8">
                 <h1 className="text-5xl font-light mb-3">{personalInfo.fullName || 'Your Name'}</h1>

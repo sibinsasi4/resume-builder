@@ -11,7 +11,7 @@ export default function BoldTemplate({ data, colorTheme, fontFamily, fontSize }:
     const { personalInfo, summary, experience, education, skills, projects, certifications } = data;
 
     return (
-        <div className={`bg-white ${fontFamily} ${fontSize} max-w-[8.5in] mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white ${fontFamily} ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
             {/* Bold Header */}
             <div className="p-8" style={{ background: `linear-gradient(135deg, ${colorTheme.primary} 0%, ${colorTheme.secondary} 100%)`, color: 'white' }}>
                 <h1 className="text-5xl font-black mb-3">{personalInfo.fullName || 'YOUR NAME'}</h1>
@@ -57,16 +57,16 @@ export default function BoldTemplate({ data, colorTheme, fontFamily, fontSize }:
 
                 {/* Experience */}
                 {experience.length > 0 && (
-                    <div className="mb-6">
-                        <h2 className="text-2xl font-black mb-4" style={{ color: colorTheme.primary }}>EXPERIENCE</h2>
+                    <div className="mb-4">
+                        <h2 className="text-2xl font-black mb-3" style={{ color: colorTheme.primary }}>EXPERIENCE</h2>
                         {experience.map((exp) => (
-                            <div key={exp.id} className="mb-5 p-4 rounded-lg border-l-4" style={{ borderColor: colorTheme.accent, backgroundColor: '#f9fafb' }}>
+                            <div key={exp.id} className="mb-4 p-4 rounded-lg border-l-4 break-inside-avoid" style={{ borderColor: colorTheme.accent, backgroundColor: '#f9fafb' }}>
                                 <div className="flex justify-between items-baseline mb-2">
                                     <h3 className="font-bold text-xl" style={{ color: colorTheme.secondary }}>{exp.position}</h3>
                                     <span className="text-sm font-semibold text-gray-600">{exp.startDate} - {exp.current ? 'PRESENT' : exp.endDate}</span>
                                 </div>
                                 <p className="font-bold text-gray-700 mb-2">{exp.company} | {exp.location}</p>
-                                <ul className="list-disc list-inside space-y-1 text-gray-700">
+                                <ul className="list-disc list-inside space-y-1 text-gray-700 text-sm">
                                     {exp.description.map((desc, idx) => (
                                         <li key={idx}>{desc}</li>
                                     ))}

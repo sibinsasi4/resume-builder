@@ -22,6 +22,7 @@ export interface PersonalInfo {
     github?: string;
     website?: string;
     portfolio?: string;
+    targetRole?: string;
 }
 
 export interface Experience {
@@ -95,7 +96,8 @@ export type TemplateType =
     | 'elegant'
     | 'bold'
     | 'timeline'
-    | 'compact';
+    | 'compact'
+    | 'premium';
 
 export interface TemplateConfig {
     id: TemplateType;

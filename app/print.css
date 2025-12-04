@@ -9,22 +9,35 @@
     }
 
     /* Page setup for A4 with proper margins */
+    /* Page setup for A4 - Zero margins to hide browser headers/footers */
     @page {
         size: A4 portrait;
-        margin: 10mm 12mm;
-        /* Top/Bottom: 10mm, Left/Right: 12mm */
+        margin: 0;
+        /* Hides default browser headers/footers */
     }
 
     /* Reset body and html for proper pagination */
     html,
     body {
-        width: 100% !important;
-        height: auto !important;
-        /* Allow multiple pages */
-        margin: 0 !important;
+        width: 210mm !important;
+        /* A4 Width */
+        min-height: 297mm !important;
+        /* A4 Height */
+        margin: 0 auto !important;
         padding: 0 !important;
         overflow: visible !important;
-        /* Allow content to flow to next page */
+        background-color: white !important;
+    }
+
+    /* Add padding to the resume container instead of page margins */
+    #resume-preview {
+        padding: 0 !important;
+        /* Let templates handle their own padding */
+        width: 100% !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        -webkit-box-decoration-break: clone !important;
+        box-decoration-break: clone !important;
     }
 
     /* Hide everything except the resume preview */
@@ -47,12 +60,9 @@
         max-width: none !important;
         height: auto !important;
         transform: none !important;
-        /* Reset any scaling */
-        /* Allow content to flow */
         margin: 0 !important;
         padding: 0 !important;
         overflow: visible !important;
-        /* Allow pagination */
         page-break-before: avoid !important;
     }
 
@@ -64,13 +74,10 @@
         max-width: none !important;
         height: auto !important;
         min-height: auto !important;
-        /* Override inline min-height */
-        /* Allow content to flow */
         margin: 0 !important;
         padding: 0 !important;
         box-sizing: border-box !important;
         overflow: visible !important;
-        /* Allow pagination */
         position: relative !important;
     }
 
@@ -129,48 +136,6 @@
     #resume-preview li {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
-    }
-
-    /* Optimize spacing for print */
-    #resume-preview {
-        font-size: 9pt !important;
-        /* Reduce font size slightly to fit more */
-        line-height: 1.3 !important;
-    }
-
-    /* Reduce excessive margins/padding for print */
-    #resume-preview section,
-    #resume-preview div[class*="mb-"] {
-        margin-bottom: 4mm !important;
-    }
-
-    #resume-preview h1 {
-        margin-bottom: 2mm !important;
-        font-size: 24pt !important;
-    }
-
-    #resume-preview h2 {
-        margin-top: 3mm !important;
-        margin-bottom: 2mm !important;
-        font-size: 14pt !important;
-        padding-bottom: 1mm !important;
-    }
-
-    #resume-preview h3 {
-        margin-top: 2mm !important;
-        margin-bottom: 1mm !important;
-        font-size: 11pt !important;
-    }
-
-    /* Optimize paragraph spacing */
-    #resume-preview p {
-        margin-bottom: 1.5mm !important;
-    }
-
-    /* Ensure proper spacing for experience/education items */
-    #resume-preview .experience-item,
-    #resume-preview .education-item {
-        margin-bottom: 3mm !important;
     }
 
     /* Hide any print buttons or UI elements */

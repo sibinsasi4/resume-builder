@@ -11,7 +11,7 @@ export default function TechTemplate({ data, colorTheme, fontFamily, fontSize }:
     const { personalInfo, summary, experience, education, skills, projects, certifications } = data;
 
     return (
-        <div className={`bg-gray-50 ${fontFamily} ${fontSize} max-w-[8.5in] mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-gray-50 ${fontFamily} ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
             {/* Header */}
             <div className="bg-gray-900 text-white px-8 py-6">
                 <h1 className="text-4xl font-bold mb-2 font-mono">{personalInfo.fullName || 'Your Name'}</h1>

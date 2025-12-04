@@ -11,7 +11,7 @@ export default function CorporateTemplate({ data, colorTheme, fontFamily, fontSi
     const { personalInfo, summary, experience, education, skills, projects, certifications } = data;
 
     return (
-        <div className={`bg-white ${fontFamily} ${fontSize} max-w-[8.5in] mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white ${fontFamily} ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
             {/* Header with Blue Background */}
             <div className="px-8 py-6" style={{ backgroundColor: '#1e40af', color: 'white' }}>
                 <h1 className="text-4xl font-bold mb-2">{personalInfo.fullName || 'Your Name'}</h1>

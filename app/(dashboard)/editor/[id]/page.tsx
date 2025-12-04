@@ -273,7 +273,15 @@ export default function EditorPage() {
                                         await saveResume();
                                         // Track download
                                         await trackDownload();
+
+                                        // Temporarily change title for print (removes "Visish AI" from PDF header/filename)
+                                        const originalTitle = document.title;
+                                        document.title = resume.title || 'Resume';
+
                                         window.print();
+
+                                        // Restore title
+                                        document.title = originalTitle;
                                     } else {
                                         // Show pricing modal
                                         setShowPricingModal(true);

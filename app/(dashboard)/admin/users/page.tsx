@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import Button from '@/components/ui/Button';
 import {
@@ -204,11 +205,18 @@ export default function AdminUsersPage() {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-6 py-4 text-right">
+                                            <td className="px-6 py-4 text-right flex justify-end gap-2">
+                                                <Link
+                                                    href={`/admin/users/${user.id}`}
+                                                    className="inline-flex items-center justify-center rounded-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed px-3 py-1.5 text-sm border-2 border-blue-600 text-blue-600 hover:bg-blue-50 focus:ring-blue-500"
+                                                >
+                                                    View
+                                                </Link>
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
-                                                    onClick={() => {
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
                                                         setSelectedUser(user);
                                                         setShowGrantModal(true);
                                                     }}

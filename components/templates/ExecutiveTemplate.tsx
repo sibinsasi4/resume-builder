@@ -11,7 +11,7 @@ export default function ExecutiveTemplate({ data, colorTheme, fontFamily, fontSi
     const { personalInfo, summary, experience, education, skills, projects, certifications } = data;
 
     return (
-        <div className={`bg-white ${fontFamily} ${fontSize} max-w-[8.5in] mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white ${fontFamily} ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
             {/* Header with accent bar */}
             <div className="relative">
                 <div className="h-3" style={{ backgroundColor: colorTheme.primary }} />

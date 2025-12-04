@@ -35,8 +35,8 @@ export async function GET(req: Request) {
             // Run queries sequentially to avoid SQLite concurrency issues
             const totalUsers = await prisma.user.count();
             const totalResumes = await prisma.resume.count();
-            // const totalDownloads = await prisma.download.count();
-            const totalDownloads = 0; // Temporary fix for crashing query
+            const totalDownloads = await prisma.download.count();
+
             const activeUsersGroup = await prisma.userSession.groupBy({
                 by: ['userId'],
                 where: {
@@ -46,6 +46,24 @@ export async function GET(req: Request) {
                 }
             });
             const activeUsers24h = activeUsersGroup.length;
+
+            // Calculate Login Stats
+            const now = new Date();
+            const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+            const loginsToday = await prisma.userSession.count({
+                where: { loginAt: { gte: startOfDay } }
+            });
+
+            const loginsThisWeek = await prisma.userSession.count({
+                where: { loginAt: { gte: startOfWeek } }
+            });
+
+            const loginsThisMonth = await prisma.userSession.count({
+                where: { loginAt: { gte: startOfMonth } }
+            });
 
             return NextResponse.json({
                 totalUsers,
@@ -57,7 +75,11 @@ export async function GET(req: Request) {
                 freeUsers: totalUsers,
                 activeUsers24h,
                 paymentStats: { total: 0, successful: 0, failed: 0, successRate: 0 },
-                loginStats: { today: 0, thisWeek: 0, thisMonth: 0 },
+                loginStats: {
+                    today: loginsToday,
+                    thisWeek: loginsThisWeek,
+                    thisMonth: loginsThisMonth
+                },
                 financialMetrics: { mrr: 0, arr: 0, arpu: 0 }
             });
         } catch (e) {

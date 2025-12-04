@@ -11,7 +11,7 @@ export default function AcademicTemplate({ data, colorTheme, fontFamily, fontSiz
     const { personalInfo, summary, experience, education, skills, projects, certifications } = data;
 
     return (
-        <div className={`bg-white p-8 ${fontFamily} ${fontSize} font-serif max-w-[8.5in] mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white p-8 ${fontFamily} ${fontSize} font-serif w-full mx-auto`} style={{ minHeight: '11in' }}>
             {/* Header */}
             <div className="text-center border-b-2 border-gray-800 pb-4 mb-6">
                 <h1 className="text-3xl font-bold mb-2">{personalInfo.fullName || 'Your Name'}</h1>

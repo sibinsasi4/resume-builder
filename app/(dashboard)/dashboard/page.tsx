@@ -393,6 +393,67 @@ export default function DashboardPage() {
                                     </div>
                                 </Card>
 
+                                {/* Import Resume Card */}
+                                <Card
+                                    hover
+                                    className="border-2 border-dashed border-green-300 bg-green-50 cursor-pointer flex items-center justify-center min-h-[200px] relative"
+                                    onClick={() => document.getElementById('resume-upload')?.click()}
+                                >
+                                    <input
+                                        type="file"
+                                        id="resume-upload"
+                                        className="hidden"
+                                        accept=".pdf,.docx,.doc"
+                                        onChange={async (e) => {
+                                            const file = e.target.files?.[0];
+                                            if (!file) return;
+
+                                            try {
+                                                setLoading(true);
+                                                const formData = new FormData();
+                                                formData.append('resume', file);
+
+                                                // 1. Upload and Parse
+                                                const uploadRes = await fetch('/api/upload', {
+                                                    method: 'POST',
+                                                    body: formData
+                                                });
+
+                                                if (!uploadRes.ok) {
+                                                    const err = await uploadRes.json();
+                                                    throw new Error(err.error || 'Upload failed');
+                                                }
+
+                                                const { structuredData, fileName } = await uploadRes.json();
+
+                                                // 2. Create New Resume with Parsed Data
+                                                const createRes = await fetch('/api/resumes', {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({
+                                                        title: `Imported: ${fileName.replace(/\.[^/.]+$/, "")}`,
+                                                        data: structuredData
+                                                    })
+                                                });
+
+                                                if (createRes.ok) {
+                                                    const { resume } = await createRes.json();
+                                                    router.push(`/editor/${resume.id}`);
+                                                }
+                                            } catch (error) {
+                                                console.error('Import failed:', error);
+                                                alert('Failed to import resume. Please try again.');
+                                                setLoading(false);
+                                            }
+                                        }}
+                                    />
+                                    <div className="text-center">
+                                        <div className="text-5xl mb-4">📤</div>
+                                        <h3 className="text-xl font-semibold text-green-600">Import Resume</h3>
+                                        <p className="text-sm text-gray-600 mt-2">Auto-fill from PDF/Word</p>
+                                    </div>
+                                </Card>
+
                                 {/* Create New Resume Card */}
                                 <Card
                                     hover
