@@ -258,7 +258,9 @@ export async function createSubscription(
     plan: PlanType,
     billingCycle?: 'monthly' | 'yearly',
     gatewaySubscriptionId?: string,
-    gateway?: 'stripe' | 'razorpay'
+    gateway?: 'stripe' | 'razorpay',
+    bonusDownloads: number = 0,
+    bonusDays: number = 0
 ) {
     const now = new Date();
     const periodEnd = new Date(now);
@@ -271,7 +273,13 @@ export async function createSubscription(
         periodEnd.setMonth(periodEnd.getMonth() + 1);
     }
 
+    // Apply bonus days
+    if (bonusDays > 0) {
+        periodEnd.setDate(periodEnd.getDate() + bonusDays);
+    }
+
     const limits = PLANS[plan];
+    const downloadsLimit = limits.downloads === 0 ? 0 : limits.downloads + bonusDownloads;
 
     return await prisma.subscription.upsert({
         where: { userId },
@@ -284,7 +292,7 @@ export async function createSubscription(
             currency: 'INR',
             currentPeriodStart: now,
             currentPeriodEnd: periodEnd,
-            downloadsLimit: limits.downloads,
+            downloadsLimit: downloadsLimit,
             analysesLimit: limits.analyses,
             ...(gateway === 'stripe' && { stripeSubscriptionId: gatewaySubscriptionId }),
             ...(gateway === 'razorpay' && { razorpaySubscriptionId: gatewaySubscriptionId }),
@@ -295,7 +303,7 @@ export async function createSubscription(
             billingCycle,
             currentPeriodStart: now,
             currentPeriodEnd: periodEnd,
-            downloadsLimit: limits.downloads,
+            downloadsLimit: downloadsLimit,
             analysesLimit: limits.analyses,
             ...(gateway === 'stripe' && { stripeSubscriptionId: gatewaySubscriptionId }),
             ...(gateway === 'razorpay' && { razorpaySubscriptionId: gatewaySubscriptionId }),

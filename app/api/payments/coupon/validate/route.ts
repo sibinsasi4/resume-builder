@@ -30,13 +30,13 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json({
-            valid: true,
+            code: coupon.code,
             discount: coupon.discount,
             type: coupon.type,
-            code: coupon.code
+            bonusType: coupon.bonusType,
+            bonusValue: coupon.bonusValue,
         });
     } catch (error) {
-        console.error('Error validating coupon:', error);
         return NextResponse.json({ error: 'Failed to validate coupon' }, { status: 500 });
     }
 }

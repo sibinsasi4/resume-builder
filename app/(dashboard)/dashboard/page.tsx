@@ -177,6 +177,7 @@ export default function DashboardPage() {
                                 ...response,
                                 plan,
                                 billingCycle: 'monthly',
+                                couponCode,
                             }),
                         });
                         setShowPricingModal(false);
@@ -315,6 +316,17 @@ export default function DashboardPage() {
                                             </div>
                                             <div className="text-2xl font-bold">{adminStats.activeUsers24h}</div>
                                             <div className="text-xs text-gray-500 mt-1">Daily active</div>
+                                        </div>
+                                        <div
+                                            className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors"
+                                            onClick={() => router.push('/admin/coupons')}
+                                        >
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Sparkles className="w-4 h-4 text-yellow-400" />
+                                                <div className="text-xs text-gray-400">Coupons</div>
+                                            </div>
+                                            <div className="text-2xl font-bold">Manage</div>
+                                            <div className="text-xs text-gray-500 mt-1">Create & Edit</div>
                                         </div>
                                     </div>
 

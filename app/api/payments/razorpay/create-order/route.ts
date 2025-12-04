@@ -44,8 +44,12 @@ export async function POST(req: Request) {
                 } else {
                     // Apply discount
                     if (coupon.type === 'percentage') {
-                        const discountAmount = (finalAmount * coupon.discount) / 100;
-                        finalAmount = Math.round(finalAmount - discountAmount);
+                        if (coupon.discount === 100 && plan !== 'payperuse') {
+                            // 100% off only allowed for payperuse
+                        } else {
+                            const discountAmount = (finalAmount * coupon.discount) / 100;
+                            finalAmount = Math.round(finalAmount - discountAmount);
+                        }
                     } else if (coupon.type === 'fixed') {
                         // Fixed amount is in Rupees, convert to paise
                         const discountInPaise = coupon.discount * 100;

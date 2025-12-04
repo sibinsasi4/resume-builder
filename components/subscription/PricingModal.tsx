@@ -49,7 +49,13 @@ const plans = [
 export default function PricingModal({ isOpen, onClose, onSelectPlan }: PricingModalProps) {
     const [selectedGateway] = useState<'razorpay'>('razorpay');
     const [couponCode, setCouponCode] = useState('');
-    const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; type: 'percentage' | 'fixed' } | null>(null);
+    const [appliedCoupon, setAppliedCoupon] = useState<{
+        code: string;
+        discount: number;
+        type: 'percentage' | 'fixed';
+        bonusType: 'none' | 'downloads' | 'duration';
+        bonusValue: number;
+    } | null>(null);
     const [validatingCoupon, setValidatingCoupon] = useState(false);
     const [couponError, setCouponError] = useState('');
 
@@ -156,7 +162,33 @@ export default function PricingModal({ isOpen, onClose, onSelectPlan }: PricingM
                                     </ul>
 
                                     <Button
-                                        onClick={() => onSelectPlan(plan.id, selectedGateway, appliedCoupon?.code)}
+                                        onClick={async () => {
+                                            const discountedPrice = getDiscountedPrice(plan.price);
+                                            if (discountedPrice === 0 && appliedCoupon) {
+                                                // Handle Free Claim directly
+                                                try {
+                                                    const response = await fetch('/api/payments/claim-free', {
+                                                        method: 'POST',
+                                                        headers: { 'Content-Type': 'application/json' },
+                                                        body: JSON.stringify({ plan: plan.id, couponCode: appliedCoupon.code }),
+                                                    });
+
+                                                    const data = await response.json();
+                                                    if (response.ok) {
+                                                        onClose();
+                                                        window.location.reload();
+                                                    } else {
+                                                        alert(data.error || 'Failed to redeem coupon');
+                                                    }
+                                                } catch (error) {
+                                                    console.error('Free claim failed', error);
+                                                    alert('Failed to redeem coupon');
+                                                }
+                                            } else {
+                                                onSelectPlan(plan.id, selectedGateway, appliedCoupon?.code);
+                                            }
+                                        }}
+                                        disabled={appliedCoupon?.discount === 100 && appliedCoupon?.type === 'percentage' && plan.id !== 'payperuse'}
                                         className={`w-full ${plan.popular
                                             ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
                                             : 'bg-white/10 hover:bg-white/20 border border-white/20'
@@ -164,6 +196,11 @@ export default function PricingModal({ isOpen, onClose, onSelectPlan }: PricingM
                                     >
                                         Select Plan
                                     </Button>
+                                    {appliedCoupon && appliedCoupon.discount === 100 && appliedCoupon.type === 'percentage' && plan.id !== 'payperuse' && (
+                                        <p className="text-xs text-red-400 text-center mt-2">
+                                            100% OFF only valid for Pay Per Download
+                                        </p>
+                                    )}
                                 </div>
                             );
                         })}
@@ -207,9 +244,16 @@ export default function PricingModal({ isOpen, onClose, onSelectPlan }: PricingM
                         {appliedCoupon && (
                             <div className="mt-2 text-green-400 text-sm flex justify-between items-center">
                                 <span>Coupon applied: {appliedCoupon.code}</span>
-                                <span className="font-bold">
-                                    -{appliedCoupon.type === 'percentage' ? `${appliedCoupon.discount}%` : `₹${appliedCoupon.discount}`}
-                                </span>
+                                <div className="text-right">
+                                    <span className="font-bold block">
+                                        -{appliedCoupon.type === 'percentage' ? `${appliedCoupon.discount}%` : `₹${appliedCoupon.discount}`}
+                                    </span>
+                                    {appliedCoupon.bonusType !== 'none' && (
+                                        <span className="text-xs text-green-300 block">
+                                            +{appliedCoupon.bonusValue} {appliedCoupon.bonusType === 'downloads' ? 'Downloads' : 'Days'}
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>

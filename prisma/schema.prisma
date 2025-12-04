@@ -291,4 +291,8 @@ model Coupon {
   isActive    Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  
+  // Bonus features
+  bonusType   String?   @default("none") // none, downloads, duration
+  bonusValue  Int?      @default(0)
 }
