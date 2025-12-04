@@ -41,6 +41,8 @@ model User {
   usageRecords  UsageRecord[]
   downloads     Download[]
   sessions      UserSession[]
+  coverLetters  CoverLetter[]
+  interviews    InterviewSession[]
   
   @@index([email])
 }
@@ -213,6 +215,7 @@ model Resume {
   
   analyses      JobAnalysis[]
   downloads     Download[]
+  coverLetters  CoverLetter[]
   
   @@index([userId])
 }
@@ -295,4 +298,49 @@ model Coupon {
   // Bonus features
   bonusType   String?   @default("none") // none, downloads, duration
   bonusValue  Int?      @default(0)
+}
+
+model CoverLetter {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  resumeId        String?
+  resume          Resume?   @relation(fields: [resumeId], references: [id])
+  
+  jobTitle        String
+  companyName     String
+  jobDescription  String
+  
+  content         String    @db.Text
+  status          String    @default("generated") // generated, edited
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([resumeId])
+}
+
+model InterviewSession {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  jobTitle        String
+  jobDescription  String?
+  
+  questions       String    @db.Text // JSON string of questions
+  answers         String?   @db.Text // JSON string of user answers
+  feedback        String?   @db.Text // JSON string of AI feedback
+  
+  score           Int?      // 0-100
+  recommendation  String?   // Strong Hire, Hire, Weak Hire, No Hire
+  
+  status          String    @default("created") // created, in_progress, completed
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  @@index([userId])
 }

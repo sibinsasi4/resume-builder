@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import Button from '@/components/ui/Button';
-import { Briefcase, LayoutDashboard } from 'lucide-react';
+import { Briefcase, LayoutDashboard, FileText, Linkedin, Mic } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 export default function DashboardNavbar() {
@@ -31,6 +31,33 @@ export default function DashboardNavbar() {
                                     Dashboard
                                 </Button>
                             </Link>
+                            <Link href="/cover-letter">
+                                <Button
+                                    variant="ghost"
+                                    className={`gap-2 ${pathname?.startsWith('/cover-letter') ? 'bg-blue-50 text-blue-600' : 'text-gray-600'}`}
+                                >
+                                    <FileText className="w-4 h-4" />
+                                    Cover Letters
+                                </Button>
+                            </Link>
+                            <Link href="/linkedin-optimize">
+                                <Button
+                                    variant="ghost"
+                                    className={`gap-2 ${pathname === '/linkedin-optimize' ? 'bg-blue-50 text-blue-600' : 'text-gray-600'}`}
+                                >
+                                    <Linkedin className="w-4 h-4" />
+                                    LinkedIn
+                                </Button>
+                            </Link>
+                            <Link href="/interview">
+                                <Button
+                                    variant="ghost"
+                                    className={`gap-2 ${pathname === '/interview' ? 'bg-blue-50 text-blue-600' : 'text-gray-600'}`}
+                                >
+                                    <Mic className="w-4 h-4" />
+                                    Interview
+                                </Button>
+                            </Link>
                             <Link href="/dashboard/jobs">
                                 <Button
                                     variant="ghost"
@@ -52,8 +79,8 @@ export default function DashboardNavbar() {
                             Sign Out
                         </Button>
                     </div>
-                </div>
-            </div>
-        </nav>
+                </div >
+            </div >
+        </nav >
     );
 }

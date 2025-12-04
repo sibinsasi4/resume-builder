@@ -34,6 +34,9 @@ export const PLANS: Record<PlanType, PlanLimits> = {
             'priority_support',
             'version_history',
             'docx_export',
+            'cover_letter',
+            'linkedin_optimization',
+            'interview_prep',
         ],
     },
     premium: {
