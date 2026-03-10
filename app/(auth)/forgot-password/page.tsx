@@ -53,15 +53,21 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-            <div className="w-full max-w-md">
-                <div className="bg-white/5 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/10">
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+            {/* Animated Background */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-amber-500/10 rounded-full blur-[120px] animate-pulse" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-500/10 rounded-full blur-[120px] animate-pulse delay-1000" />
+            </div>
+
+            <div className="w-full max-w-md relative z-10">
+                <div className="bg-slate-900/50 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-white/10">
                     <div className="text-center mb-8">
-                        <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-                            <Mail className="w-6 h-6 text-blue-400" />
+                        <div className="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <Mail className="w-6 h-6 text-amber-400" />
                         </div>
                         <h1 className="text-2xl font-bold text-white mb-2">Forgot Password?</h1>
-                        <p className="text-gray-400 text-sm">
+                        <p className="text-slate-400 text-sm">
                             Enter your email address and we'll send you a link to reset your password.
                         </p>
                     </div>
@@ -96,7 +102,7 @@ export default function ForgotPasswordPage() {
 
                             <Button
                                 type="submit"
-                                className="w-full bg-blue-600 hover:bg-blue-700"
+                                className="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:shadow-lg hover:shadow-amber-500/20 text-slate-900 font-semibold border-none"
                                 disabled={loading}
                             >
                                 {loading ? 'Sending Link...' : 'Send Reset Link'}
@@ -105,7 +111,7 @@ export default function ForgotPasswordPage() {
                             <div className="text-center mt-4">
                                 <Link
                                     href="/login"
-                                    className="text-sm text-gray-400 hover:text-white flex items-center justify-center gap-2 transition-colors"
+                                    className="text-sm text-slate-400 hover:text-white flex items-center justify-center gap-2 transition-colors"
                                 >
                                     <ArrowLeft className="w-4 h-4" />
                                     Back to Login

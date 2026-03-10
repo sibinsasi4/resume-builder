@@ -63,19 +63,22 @@ export default function UsageWidget({ onUpgrade }: UsageWidgetProps) {
         : (data.usage.analyses.used / data.usage.analyses.limit) * 100;
 
     return (
-        <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-purple-200">
+        <Card className="p-6 bg-white/5 backdrop-blur-xl border-white/10 shadow-xl relative overflow-hidden group hover:bg-white/10 transition-colors">
+            {/* Ambient glow */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 relative z-10">
                 <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${isPro
-                            ? 'bg-gradient-to-br from-purple-500 to-pink-500'
-                            : 'bg-gradient-to-br from-gray-400 to-gray-500'
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg ${isPro
+                        ? 'bg-gradient-to-br from-purple-500 to-pink-500'
+                        : 'bg-white/10 ring-1 ring-white/20'
                         }`}>
-                        <Crown className="w-6 h-6 text-white" />
+                        <Crown className={`w-6 h-6 ${isPro ? 'text-white' : 'text-purple-300'}`} />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-gray-900 capitalize">{data.plan} Plan</h3>
-                        <p className="text-sm text-gray-600">
+                        <h3 className="text-lg font-bold text-white capitalize">{data.plan} Plan</h3>
+                        <p className="text-sm text-gray-400">
                             {data.status === 'active' ? 'Active' : 'Inactive'}
                         </p>
                     </div>
@@ -84,7 +87,7 @@ export default function UsageWidget({ onUpgrade }: UsageWidgetProps) {
                     <Button
                         size="sm"
                         onClick={onUpgrade}
-                        className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                        className="bg-white text-purple-900 hover:bg-purple-50 border-0"
                     >
                         <TrendingUp className="w-4 h-4 mr-1" />
                         Upgrade
@@ -93,25 +96,25 @@ export default function UsageWidget({ onUpgrade }: UsageWidgetProps) {
             </div>
 
             {/* Usage Stats */}
-            <div className="space-y-4">
+            <div className="space-y-6 relative z-10">
                 {/* Downloads */}
                 <div>
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700">Downloads</span>
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-medium text-gray-300">Downloads</span>
+                        <span className="text-sm font-semibold text-white">
                             {data.usage.downloads.limit === 0
                                 ? `${data.usage.downloads.used} used`
                                 : `${data.usage.downloads.remaining} remaining`}
                         </span>
                     </div>
-                    <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
                         <div
-                            className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500"
+                            className="absolute inset-y-0 left-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"
                             style={{ width: `${Math.min(downloadPercentage, 100)}%` }}
                         />
                     </div>
                     {data.usage.downloads.limit > 0 && (
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 mt-2">
                             {data.usage.downloads.used} of {data.usage.downloads.limit} used
                         </p>
                     )}
@@ -120,21 +123,21 @@ export default function UsageWidget({ onUpgrade }: UsageWidgetProps) {
                 {/* AI Analyses */}
                 <div>
                     <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium text-gray-700">AI Analyses</span>
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-sm font-medium text-gray-300">AI Analyses</span>
+                        <span className="text-sm font-semibold text-white">
                             {data.usage.analyses.limit === 0
                                 ? 'Unlimited'
                                 : `${data.usage.analyses.remaining} remaining`}
                         </span>
                     </div>
-                    <div className="relative h-3 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
                         <div
-                            className="absolute inset-y-0 left-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full transition-all duration-500"
+                            className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(52,211,153,0.5)]"
                             style={{ width: `${Math.min(analysisPercentage, 100)}%` }}
                         />
                     </div>
                     {data.usage.analyses.limit > 0 && (
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 mt-2">
                             {data.usage.analyses.used} of {data.usage.analyses.limit} used
                         </p>
                     )}
@@ -143,20 +146,20 @@ export default function UsageWidget({ onUpgrade }: UsageWidgetProps) {
 
             {/* Upgrade CTA for Free Users */}
             {!isPro && (
-                <div className="mt-6 p-4 bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl border border-purple-200">
+                <div className="mt-6 p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl border border-purple-500/30 backdrop-blur-sm">
                     <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
                             <Zap className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900 mb-1">Unlock Premium Features</h4>
-                            <p className="text-sm text-gray-600 mb-3">
-                                Get unlimited downloads, AI analyses, and access to all templates
+                            <h4 className="font-semibold text-white mb-1">Unlock Premium</h4>
+                            <p className="text-sm text-purple-200/80 mb-3 leading-relaxed">
+                                Get unlimited access to all features
                             </p>
                             <Button
                                 size="sm"
                                 onClick={onUpgrade}
-                                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 w-full"
+                                className="bg-white/10 hover:bg-white/20 text-white w-full border border-white/20"
                             >
                                 Upgrade Now
                                 <ArrowRight className="w-4 h-4 ml-1" />
@@ -168,8 +171,8 @@ export default function UsageWidget({ onUpgrade }: UsageWidgetProps) {
 
             {/* Period Info */}
             {data.usage.periodEnd && (
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                    <p className="text-xs text-gray-500 text-center">
+                <div className="mt-6 pt-4 border-t border-white/10">
+                    <p className="text-xs text-gray-500 text-center font-medium">
                         Resets on {new Date(data.usage.periodEnd).toLocaleDateString()}
                     </p>
                 </div>

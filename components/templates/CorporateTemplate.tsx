@@ -21,6 +21,7 @@ interface CorporateTemplateProps {
     colorTheme: ColorTheme;
     fontFamily: string;
     fontSize: string;
+    spacing?: 'compact' | 'standard';
     sectionOrder?: string[];
     onReorder?: (newOrder: string[]) => void;
 }
@@ -30,6 +31,7 @@ export default function CorporateTemplate({
     colorTheme,
     fontFamily,
     fontSize,
+    spacing = 'standard',
     sectionOrder = [],
     onReorder
 }: CorporateTemplateProps) {
@@ -144,7 +146,7 @@ export default function CorporateTemplate({
     const currentOrder = sectionOrder.length > 0 ? sectionOrder : defaultOrder;
 
     return (
-        <div className={`bg-white ${fontFamily} ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white ${fontFamily} ${fontSize} mx-auto print:mx-0`} style={{ width: '210mm', minHeight: '297mm' }}>
             {/* Header with Blue Background */}
             <div className="px-8 py-6" style={{ backgroundColor: '#1e40af', color: 'white' }}>
                 <h1 className="text-4xl font-bold mb-2">{personalInfo.fullName || 'Your Name'}</h1>

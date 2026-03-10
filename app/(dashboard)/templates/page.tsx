@@ -26,12 +26,18 @@ const colorGradients: Record<string, string> = {
     red: 'from-red-500 to-red-600',
 };
 
+import ResumeImportModal from '@/components/dashboard/ResumeImportModal';
+
 export default function TemplateSelectionPage() {
     const router = useRouter();
     const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
     const [creating, setCreating] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
+    // Modal State
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+    const [targetTemplate, setTargetTemplate] = useState<{ id: string, name: string } | null>(null);
 
     // Filter templates based on search and category
     const filteredTemplates = useMemo(() => {
@@ -49,13 +55,22 @@ export default function TemplateSelectionPage() {
 
     const categories = ['All', ...Array.from(new Set(resumeTemplates.map(t => t.category)))];
 
-    const handleUseTemplate = async (templateId: string) => {
+    // Triggered when user clicks "Use This Template"
+    const handleTemplateClick = (templateId: string, templateName: string) => {
+        setTargetTemplate({ id: templateId, name: templateName });
+        setIsImportModalOpen(true);
+    };
+
+    // Called if user chooses "Start Blank" in the modal
+    const handleStartBlank = async () => {
+        if (!targetTemplate) return;
+
         try {
             setCreating(true);
-            const template = resumeTemplates.find(t => t.id === templateId);
+            const template = resumeTemplates.find(t => t.id === targetTemplate.id);
             if (!template) return;
 
-            // Create resume with template data
+            // Create resume with template sample data
             const response = await fetch('/api/resumes', {
                 method: 'POST',
                 headers: {
@@ -63,7 +78,7 @@ export default function TemplateSelectionPage() {
                 },
                 body: JSON.stringify({
                     title: `${template.name} Resume`,
-                    templateType: 'modern',
+                    templateType: template.id,
                     colorTheme: template.color,
                     data: template.data,
                 }),
@@ -77,34 +92,27 @@ export default function TemplateSelectionPage() {
             console.error('Failed to create resume:', error);
         } finally {
             setCreating(false);
+            setIsImportModalOpen(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <div className="container mx-auto px-4 py-8 relative z-10">
             {/* Header */}
-            <div className="bg-white shadow-sm border-b">
-                <div className="container mx-auto px-4 py-6">
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                Choose Your Template
-                            </h1>
-                            <p className="text-gray-600 mt-1">
-                                Select a pre-filled template and customize it to your needs
-                            </p>
-                        </div>
-                        <Button
-                            variant="ghost"
-                            onClick={() => router.push('/dashboard')}
-                        >
-                            ← Back to Dashboard
-                        </Button>
+            <div className="mb-8">
+                <div className="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                            Choose Your Template
+                        </h1>
+                        <p className="text-gray-400 mt-1">
+                            Select a pre-filled template and customize it to your needs
+                        </p>
                     </div>
                 </div>
 
                 {/* Search and Filter Bar */}
-                <div className="container mx-auto px-4 py-4 border-t">
+                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4">
                     <div className="flex flex-col md:flex-row gap-4">
                         {/* Search Bar */}
                         <div className="flex-1 relative">
@@ -114,7 +122,7 @@ export default function TemplateSelectionPage() {
                                 placeholder="Search templates by role, skills, or keywords..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-2 bg-black/20 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                             />
                         </div>
 
@@ -126,7 +134,7 @@ export default function TemplateSelectionPage() {
                                     onClick={() => setSelectedCategory(category)}
                                     className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${selectedCategory === category
                                         ? 'bg-blue-600 text-white'
-                                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                                        : 'bg-white/5 text-gray-300 hover:bg-white/10 border border-white/10'
                                         }`}
                                 >
                                     {category}
@@ -136,20 +144,20 @@ export default function TemplateSelectionPage() {
                     </div>
 
                     {/* Results count */}
-                    <div className="mt-3 text-sm text-gray-600">
+                    <div className="mt-3 text-sm text-gray-500">
                         Showing {filteredTemplates.length} of {resumeTemplates.length} templates
                     </div>
                 </div>
             </div>
 
             {/* Templates Grid */}
-            <div className="container mx-auto px-4 py-12">
+            <div className="mb-12">
                 {filteredTemplates.length === 0 ? (
-                    <div className="text-center py-12">
-                        <p className="text-gray-500 text-lg">No templates found matching your search.</p>
+                    <div className="text-center py-12 bg-white/5 rounded-xl border border-dashed border-white/20">
+                        <p className="text-gray-400 text-lg">No templates found matching your search.</p>
                         <button
                             onClick={() => { setSearchQuery(''); setSelectedCategory('All'); }}
-                            className="mt-4 text-blue-600 hover:underline"
+                            className="mt-4 text-blue-400 hover:text-blue-300 hover:underline"
                         >
                             Clear filters
                         </button>
@@ -163,7 +171,7 @@ export default function TemplateSelectionPage() {
                             return (
                                 <div
                                     key={template.id}
-                                    className={`bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer ${isSelected ? 'ring-4 ring-blue-500 scale-105' : ''
+                                    className={`bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 overflow-hidden cursor-pointer transition-all duration-300 hover:border-white/20 hover:transform hover:scale-[1.02] ${isSelected ? 'ring-2 ring-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)]' : ''
                                         }`}
                                     onClick={() => setSelectedTemplate(template.id)}
                                 >
@@ -195,19 +203,19 @@ export default function TemplateSelectionPage() {
                                     {/* Template Preview Info */}
                                     <div className="p-6">
                                         <div className="space-y-3">
-                                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                                            <div className="flex items-center gap-2 text-sm text-gray-400">
                                                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                                                 <span>Complete profile information</span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                                            <div className="flex items-center gap-2 text-sm text-gray-400">
                                                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                                                 <span>{template.data.experience.length}+ years of experience</span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                                            <div className="flex items-center gap-2 text-sm text-gray-400">
                                                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                                                 <span>{template.data.skills.length}+ skill categories</span>
                                             </div>
-                                            <div className="flex items-center gap-2 text-sm text-gray-600">
+                                            <div className="flex items-center gap-2 text-sm text-gray-400">
                                                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                                                 <span>Professional summary included</span>
                                             </div>
@@ -216,12 +224,12 @@ export default function TemplateSelectionPage() {
                                         <Button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                handleUseTemplate(template.id);
+                                                handleTemplateClick(template.id, template.name);
                                             }}
                                             disabled={creating}
-                                            className="w-full mt-6"
+                                            className="w-full mt-6 bg-blue-600 hover:bg-blue-500 text-white border-0"
                                         >
-                                            {creating && selectedTemplate === template.id
+                                            {creating && targetTemplate?.id === template.id
                                                 ? 'Creating...'
                                                 : 'Use This Template'}
                                         </Button>
@@ -233,30 +241,39 @@ export default function TemplateSelectionPage() {
                 )}
 
                 {/* Info Section */}
-                <div className="mt-12 bg-blue-50 border border-blue-200 rounded-xl p-6">
-                    <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                <div className="mt-12 bg-blue-500/10 border border-blue-500/20 rounded-xl p-6 backdrop-blur-xl">
+                    <h3 className="text-lg font-semibold text-blue-300 mb-2">
                         💡 How it works
                     </h3>
-                    <ul className="space-y-2 text-blue-800">
+                    <ul className="space-y-2 text-blue-200/80">
                         <li className="flex items-start gap-2">
-                            <span className="text-blue-600 font-bold">1.</span>
+                            <span className="text-blue-400 font-bold">1.</span>
                             <span>Choose a template that matches your profession</span>
                         </li>
                         <li className="flex items-start gap-2">
-                            <span className="text-blue-600 font-bold">2.</span>
-                            <span>Template comes pre-filled with professional sample data</span>
+                            <span className="text-blue-400 font-bold">2.</span>
+                            <span>Either <strong>upload your existing resume</strong> or start from scratch</span>
                         </li>
                         <li className="flex items-start gap-2">
-                            <span className="text-blue-600 font-bold">3.</span>
-                            <span>Simply edit the content to match your experience</span>
+                            <span className="text-blue-400 font-bold">3.</span>
+                            <span>Our AI picks the relevant info and auto-fills your template</span>
                         </li>
                         <li className="flex items-start gap-2">
-                            <span className="text-blue-600 font-bold">4.</span>
-                            <span>Download your professional resume in minutes!</span>
+                            <span className="text-blue-400 font-bold">4.</span>
+                            <span>Review, edit, and download in minutes!</span>
                         </li>
                     </ul>
                 </div>
             </div>
+
+            {/* Smart Import Modal */}
+            <ResumeImportModal
+                isOpen={isImportModalOpen}
+                onClose={() => setIsImportModalOpen(false)}
+                templateId={targetTemplate?.id || 'modern'}
+                templateName={targetTemplate?.name || 'Selected Template'}
+                onSkip={handleStartBlank}
+            />
         </div>
     );
 }

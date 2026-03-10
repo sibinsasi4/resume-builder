@@ -1,7 +1,104 @@
 import { ResumeData, PersonalInfo, Experience, Education, Skill, Project } from '@/lib/types';
 
-export function parseResumeStructure(text: string): ResumeData {
-    const lines = text.split('\n').map(line => line.trim()).filter(Boolean);
+import { model } from '@/lib/ai/gemini';
+
+// Main function that tries AI first, then falls back to regex
+export async function parseResumeStructure(text: string): Promise<ResumeData> {
+    try {
+        if (!process.env.GOOGLE_API_KEY) {
+            console.warn('No Google API Key found, using regex parser.');
+            return parseResumeStructureRegex(text);
+        }
+        return await parseResumeStructureAI(text);
+    } catch (error) {
+        console.error('AI Parsing failed, falling back to regex:', error);
+        return parseResumeStructureRegex(text);
+    }
+}
+
+async function parseResumeStructureAI(text: string): Promise<ResumeData> {
+    const prompt = `
+    You are an expert Resume Parser. Your task is to extract structured information from the provided resume text and return it strictly as a JSON object matching the TypeScript interface provided below.
+
+    resume text:
+    """
+    ${text.substring(0, 15000)} 
+    """
+
+    Calculate the JSON matching this schema:
+    interface ResumeData {
+        personalInfo: {
+            fullName: string;
+            email: string;
+            phone: string;
+            location: string;
+            linkedin?: string;
+            website?: string;
+            targetRole?: string; // Infer from summary or latest experience
+        };
+        summary?: string; // detailed professional summary
+        experience: {
+            id: string; // generate random unique string
+            company: string;
+            position: string;
+            location: string;
+            startDate: string; // e.g., "Jan 2020" or "2020"
+            endDate: string; // e.g., "Present", "Dec 2022"
+            current: boolean;
+            description: string[]; // split bullet points
+        }[];
+        education: {
+            id: string; // generate random unique string
+            institution: string;
+            degree: string;
+            field: string;
+            location: string;
+            startDate: string;
+            endDate: string;
+            achievements?: string[]; // extract key achievements or details
+        }[];
+        skills: {
+            id: string; // generate random unique string
+            category: string; // e.g., "Technical", "Soft Skills", "Tools" - group intelligently
+            items: string[];
+        }[];
+        projects: {
+            id: string; // generate random unique string
+            name: string;
+            description: string;
+            technologies: string[];
+            link?: string;
+        }[];
+        certifications: {
+            id: string; // generate random unique string
+            name: string;
+            issuer: string;
+            date: string;
+        }[];
+        achievements: string[]; // List of key awards or honors not covered in experience
+    }
+
+    IMPORTANT:
+    - Return ONLY valid JSON. No markdown formatting.
+    - generate random IDs for arrays.
+    - Be concise but comprehensive.
+    - Infer missing fields if context allows (e.g. current=true if "Present" in date).
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const textResponse = response.text();
+
+    // Clean markdown code blocks if present
+    const cleanJson = textResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+
+    return JSON.parse(cleanJson) as ResumeData;
+}
+
+export function parseResumeStructureRegex(text: string): ResumeData {
+    // ... (Existing Regex Logic)
+    // We reuse the existing logic, just wrapped/renamed.
+    const lines = text.split('\\n').map(line => line.trim()).filter(Boolean);
     const fullText = text; // Keep full text for regex matching
 
     // 1. Extract Personal Info

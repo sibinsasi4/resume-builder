@@ -164,28 +164,23 @@ export default function AnalysisPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-            {/* Top Bar */}
-            <div className="bg-white shadow-sm border-b">
-                <div className="container mx-auto px-4 py-3">
-                    <div className="flex justify-between items-center">
-                        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                            VISISH - Job Match Analysis
-                        </h1>
-                        <Button variant="outline" size="sm" onClick={() => router.push('/dashboard')}>
-                            ← Back to Dashboard
-                        </Button>
-                    </div>
-                </div>
+        <div className="container mx-auto px-4 py-8 relative z-10">
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    Job Match Analysis
+                </h1>
+                <Button variant="outline" size="sm" onClick={() => router.push('/dashboard')} className="border-white/20 text-white hover:bg-white/10">
+                    ← Back to Dashboard
+                </Button>
             </div>
 
             <div className="container mx-auto px-4 py-8">
                 {!result ? (
                     // Input Section
                     <div className="max-w-3xl mx-auto">
-                        <Card>
-                            <h2 className="text-2xl font-bold mb-4">Analyze Resume with Job Description</h2>
-                            <p className="text-gray-600 mb-6">
+                        <Card className="bg-white/5 backdrop-blur-xl border-white/10 text-white">
+                            <h2 className="text-2xl font-bold mb-4 text-white">Analyze Resume with Job Description</h2>
+                            <p className="text-gray-400 mb-6">
                                 {useUpload
                                     ? 'Upload your resume and paste the job description to get AI-powered insights.'
                                     : 'Paste the job description below to get AI-powered insights on how well your resume matches the role.'
@@ -193,7 +188,7 @@ export default function AnalysisPage() {
                             </p>
 
                             {/* Mode Toggle */}
-                            <div className="flex gap-2 mb-6 p-1 bg-gray-100 rounded-lg">
+                            <div className="flex gap-2 mb-6 p-1 bg-white/10 rounded-lg">
                                 <button
                                     onClick={() => {
                                         setUseUpload(false);
@@ -201,8 +196,8 @@ export default function AnalysisPage() {
                                         setUploadedText('');
                                     }}
                                     className={`flex-1 px-4 py-2 rounded-md font-medium transition-all ${!useUpload
-                                        ? 'bg-white text-blue-600 shadow-sm'
-                                        : 'text-gray-600 hover:text-gray-900'
+                                        ? 'bg-blue-600 text-white shadow-lg'
+                                        : 'text-gray-400 hover:text-white'
                                         }`}
                                 >
                                     Use Existing Resume
@@ -210,8 +205,8 @@ export default function AnalysisPage() {
                                 <button
                                     onClick={() => setUseUpload(true)}
                                     className={`flex-1 px-4 py-2 rounded-md font-medium transition-all ${useUpload
-                                        ? 'bg-white text-blue-600 shadow-sm'
-                                        : 'text-gray-600 hover:text-gray-900'
+                                        ? 'bg-blue-600 text-white shadow-lg'
+                                        : 'text-gray-400 hover:text-white'
                                         }`}
                                 >
                                     Upload Resume
@@ -222,7 +217,7 @@ export default function AnalysisPage() {
                                 {/* File Upload Section */}
                                 {useUpload && (
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-medium text-gray-300 mb-2">
                                             Resume File *
                                         </label>
                                         <div
@@ -231,22 +226,22 @@ export default function AnalysisPage() {
                                             onDragOver={handleDrag}
                                             onDrop={handleDrop}
                                             className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${dragActive
-                                                ? 'border-blue-500 bg-blue-50'
+                                                ? 'border-blue-500 bg-blue-500/10'
                                                 : uploadedFile
-                                                    ? 'border-green-500 bg-green-50'
-                                                    : 'border-gray-300 hover:border-gray-400'
+                                                    ? 'border-green-500 bg-green-500/10'
+                                                    : 'border-white/20 hover:border-white/40 bg-white/5'
                                                 }`}
                                         >
                                             {uploading ? (
                                                 <div className="space-y-2">
-                                                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                                                    <p className="text-gray-600">Processing resume...</p>
+                                                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                                                    <p className="text-gray-400">Processing resume...</p>
                                                 </div>
                                             ) : uploadedFile ? (
                                                 <div className="space-y-2">
-                                                    <div className="text-green-600 text-4xl">✓</div>
-                                                    <p className="font-medium text-gray-900">{uploadedFile.name}</p>
-                                                    <p className="text-sm text-gray-500">
+                                                    <div className="text-green-400 text-4xl">✓</div>
+                                                    <p className="font-medium text-white">{uploadedFile.name}</p>
+                                                    <p className="text-sm text-gray-400">
                                                         {(uploadedFile.size / 1024).toFixed(1)} KB
                                                     </p>
                                                     <button
@@ -254,15 +249,15 @@ export default function AnalysisPage() {
                                                             setUploadedFile(null);
                                                             setUploadedText('');
                                                         }}
-                                                        className="text-sm text-blue-600 hover:text-blue-700 underline"
+                                                        className="text-sm text-blue-400 hover:text-blue-300 underline"
                                                     >
                                                         Remove file
                                                     </button>
                                                 </div>
                                             ) : (
                                                 <div className="space-y-2">
-                                                    <div className="text-gray-400 text-4xl">📄</div>
-                                                    <p className="text-gray-700 font-medium">
+                                                    <div className="text-gray-500 text-4xl">📄</div>
+                                                    <p className="text-gray-300 font-medium">
                                                         Drag and drop your resume here
                                                     </p>
                                                     <p className="text-sm text-gray-500">or</p>
@@ -277,7 +272,7 @@ export default function AnalysisPage() {
                                                             }}
                                                             className="hidden"
                                                         />
-                                                        <span className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer inline-block">
+                                                        <span className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer inline-block transition-colors">
                                                             Browse Files
                                                         </span>
                                                     </label>
@@ -291,26 +286,26 @@ export default function AnalysisPage() {
                                 )}
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">
                                         Job Title (Optional)
                                     </label>
                                     <input
                                         type="text"
                                         value={jobTitle}
                                         onChange={(e) => setJobTitle(e.target.value)}
-                                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        className="w-full px-4 py-3 bg-black/20 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                         placeholder="e.g., Senior Software Engineer"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-gray-300 mb-2">
                                         Job Description *
                                     </label>
                                     <textarea
                                         value={jobDescription}
                                         onChange={(e) => setJobDescription(e.target.value)}
-                                        className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        className="w-full px-4 py-3 bg-black/20 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-500"
                                         rows={12}
                                         placeholder="Paste the complete job description here..."
                                     />
@@ -319,7 +314,7 @@ export default function AnalysisPage() {
                                 <Button
                                     onClick={runAnalysis}
                                     disabled={analyzing || (useUpload && !uploadedText)}
-                                    className="w-full"
+                                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-blue-500/20 transition-all"
                                 >
                                     {analyzing ? 'Analyzing...' : 'Run Analysis'}
                                 </Button>
@@ -330,40 +325,40 @@ export default function AnalysisPage() {
                     // Results Section
                     <div className="space-y-6">
                         <div className="flex justify-between items-center">
-                            <h2 className="text-3xl font-bold">Analysis Results</h2>
-                            <Button variant="outline" onClick={() => setResult(null)}>
+                            <h2 className="text-3xl font-bold text-white">Analysis Results</h2>
+                            <Button variant="outline" onClick={() => setResult(null)} className="border-white/20 text-white hover:bg-white/10">
                                 Analyze Another Job
                             </Button>
                         </div>
 
                         {/* Score Cards */}
                         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            <Card className="text-center">
-                                <div className="text-sm text-gray-600 mb-2">ATS Score</div>
+                            <Card className="text-center bg-white/5 backdrop-blur-xl border-white/10">
+                                <div className="text-sm text-gray-400 mb-2">ATS Score</div>
                                 <div className={`text-4xl font-bold ${getScoreColor(result.atsScore)}`}>
                                     {result.atsScore}
                                 </div>
                                 <div className="text-xs text-gray-500 mt-2">out of 100</div>
                             </Card>
 
-                            <Card className="text-center">
-                                <div className="text-sm text-gray-600 mb-2">Job Match</div>
+                            <Card className="text-center bg-white/5 backdrop-blur-xl border-white/10">
+                                <div className="text-sm text-gray-400 mb-2">Job Match</div>
                                 <div className={`text-4xl font-bold ${getScoreColor(result.matchScore)}`}>
                                     {result.matchScore}%
                                 </div>
                                 <div className="text-xs text-gray-500 mt-2">overall match</div>
                             </Card>
 
-                            <Card className="text-center">
-                                <div className="text-sm text-gray-600 mb-2">Skills Match</div>
+                            <Card className="text-center bg-white/5 backdrop-blur-xl border-white/10">
+                                <div className="text-sm text-gray-400 mb-2">Skills Match</div>
                                 <div className={`text-4xl font-bold ${getScoreColor(result.skillsMatch)}`}>
                                     {result.skillsMatch}%
                                 </div>
                                 <div className="text-xs text-gray-500 mt-2">skills alignment</div>
                             </Card>
 
-                            <Card className="text-center">
-                                <div className="text-sm text-gray-600 mb-2">Experience Match</div>
+                            <Card className="text-center bg-white/5 backdrop-blur-xl border-white/10">
+                                <div className="text-sm text-gray-400 mb-2">Experience Match</div>
                                 <div className={`text-4xl font-bold ${getScoreColor(result.experienceMatch)}`}>
                                     {result.experienceMatch}%
                                 </div>
@@ -372,25 +367,25 @@ export default function AnalysisPage() {
                         </div>
 
                         {/* Recommendation */}
-                        <Card className={`border-l-4 ${result.recommendation.decision === 'strongly-apply' ? 'border-green-500 bg-green-50' :
-                            result.recommendation.decision === 'apply-with-improvements' ? 'border-yellow-500 bg-yellow-50' :
-                                'border-red-500 bg-red-50'
+                        <Card className={`border-l-4 bg-white/5 backdrop-blur-xl border-white/10 ${result.recommendation.decision === 'strongly-apply' ? 'border-l-green-500' :
+                            result.recommendation.decision === 'apply-with-improvements' ? 'border-l-yellow-500' :
+                                'border-l-red-500'
                             }`}>
-                            <h3 className="text-xl font-bold mb-3">
+                            <h3 className="text-xl font-bold mb-3 text-white">
                                 {result.recommendation.decision === 'strongly-apply' ? '✅ Strongly Recommended to Apply' :
                                     result.recommendation.decision === 'apply-with-improvements' ? '⚠️ Apply with Improvements' :
                                         '📚 Upskill First'}
                             </h3>
-                            <p className="text-gray-700">{result.recommendation.reasoning}</p>
+                            <p className="text-gray-300">{result.recommendation.reasoning}</p>
                         </Card>
 
                         {/* SWOT Analysis */}
                         <div className="grid md:grid-cols-3 gap-4">
-                            <Card className="border-l-4 border-green-500">
-                                <h3 className="text-lg font-bold mb-3 text-green-700">💪 Strengths</h3>
+                            <Card className="border-l-4 border-l-green-500 bg-white/5 backdrop-blur-xl border-white/10">
+                                <h3 className="text-lg font-bold mb-3 text-green-400">💪 Strengths</h3>
                                 <ul className="space-y-2">
                                     {result.swotAnalysis.strengths.map((strength, idx) => (
-                                        <li key={idx} className="text-sm text-gray-700 flex items-start">
+                                        <li key={idx} className="text-sm text-gray-300 flex items-start">
                                             <span className="text-green-500 mr-2">•</span>
                                             <span>{strength}</span>
                                         </li>
@@ -398,11 +393,11 @@ export default function AnalysisPage() {
                                 </ul>
                             </Card>
 
-                            <Card className="border-l-4 border-red-500">
-                                <h3 className="text-lg font-bold mb-3 text-red-700">⚠️ Weaknesses</h3>
+                            <Card className="border-l-4 border-l-red-500 bg-white/5 backdrop-blur-xl border-white/10">
+                                <h3 className="text-lg font-bold mb-3 text-red-400">⚠️ Weaknesses</h3>
                                 <ul className="space-y-2">
                                     {result.swotAnalysis.weaknesses.map((weakness, idx) => (
-                                        <li key={idx} className="text-sm text-gray-700 flex items-start">
+                                        <li key={idx} className="text-sm text-gray-300 flex items-start">
                                             <span className="text-red-500 mr-2">•</span>
                                             <span>{weakness}</span>
                                         </li>
@@ -410,11 +405,11 @@ export default function AnalysisPage() {
                                 </ul>
                             </Card>
 
-                            <Card className="border-l-4 border-blue-500">
-                                <h3 className="text-lg font-bold mb-3 text-blue-700">🚀 Opportunities</h3>
+                            <Card className="border-l-4 border-l-blue-500 bg-white/5 backdrop-blur-xl border-white/10">
+                                <h3 className="text-lg font-bold mb-3 text-blue-400">🚀 Opportunities</h3>
                                 <ul className="space-y-2">
                                     {result.swotAnalysis.opportunities.map((opportunity, idx) => (
-                                        <li key={idx} className="text-sm text-gray-700 flex items-start">
+                                        <li key={idx} className="text-sm text-gray-300 flex items-start">
                                             <span className="text-blue-500 mr-2">•</span>
                                             <span>{opportunity}</span>
                                         </li>
@@ -424,35 +419,36 @@ export default function AnalysisPage() {
                         </div>
 
                         {/* Resume Suggestions */}
-                        <Card>
-                            <h3 className="text-2xl font-bold mb-4">📝 Resume Improvement Suggestions</h3>
+                        <Card className="bg-white/5 backdrop-blur-xl border-white/10">
+                            <h3 className="text-2xl font-bold mb-4 text-white">📝 Resume Improvement Suggestions</h3>
                             <div className="space-y-4">
                                 {result.suggestions.map((suggestion, idx) => (
                                     <div
                                         key={idx}
-                                        className={`p-4 rounded-lg border-l-4 ${suggestion.priority === 'high' ? 'border-red-500 bg-red-50' :
-                                            suggestion.priority === 'medium' ? 'border-yellow-500 bg-yellow-50' :
-                                                'border-blue-500 bg-blue-50'
+                                        className={`p-4 rounded-lg border-l-4 border-white/5 bg-black/20 ${suggestion.priority === 'high' ? 'border-l-red-500' :
+                                            suggestion.priority === 'medium' ? 'border-l-yellow-500' :
+                                                'border-l-blue-500'
                                             }`}
                                     >
                                         <div className="flex justify-between items-start mb-2">
-                                            <span className="font-semibold text-sm uppercase text-gray-600">
+                                            <span className="font-semibold text-sm uppercase text-gray-400">
                                                 {suggestion.section}
                                             </span>
-                                            <span className={`text-xs px-2 py-1 rounded ${suggestion.priority === 'high' ? 'bg-red-200 text-red-800' :
-                                                suggestion.priority === 'medium' ? 'bg-yellow-200 text-yellow-800' :
-                                                    'bg-blue-200 text-blue-800'
+                                            <span className={`text-xs px-2 py-1 rounded ${suggestion.priority === 'high' ? 'bg-red-500/20 text-red-300' :
+                                                suggestion.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
+                                                    'bg-blue-500/20 text-blue-300'
                                                 }`}>
                                                 {suggestion.priority} priority
                                             </span>
                                         </div>
-                                        <p className="text-gray-700">{suggestion.suggestion}</p>
+                                        <p className="text-gray-300">{suggestion.suggestion}</p>
                                     </div>
                                 ))}
                             </div>
                         </Card>
                     </div>
                 )}
+
             </div>
         </div>
     );

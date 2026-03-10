@@ -1,4 +1,4 @@
-# VISISH - AI-Powered Resume Builder & Job Match Platform
+# Visish - AI-Powered Resume Builder & Job Match Platform
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone)
 

@@ -86,31 +86,29 @@ export default function PricingPage() {
     const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'yearly'>('monthly');
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+        <div className="min-h-screen bg-slate-950 text-slate-50 selection:bg-amber-500/30">
             {/* Animated Background */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-tl from-pink-500/20 to-orange-500/20 rounded-full blur-3xl animate-pulse" />
+                <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-amber-500/10 rounded-full blur-[120px] animate-pulse" />
+                <div className="absolute top-[20%] right-[-10%] w-[40%] h-[60%] bg-purple-500/10 rounded-full blur-[120px] animate-pulse delay-1000" />
+                <div className="absolute bottom-[-10%] left-[20%] w-[60%] h-[40%] bg-indigo-500/10 rounded-full blur-[120px] animate-pulse delay-2000" />
             </div>
 
             {/* Header */}
-            <header className="relative z-50 border-b border-white/10 bg-black/20 backdrop-blur-xl sticky top-0">
+            <header className="relative z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl sticky top-0">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div className="flex items-center justify-between">
                         <Link href="/" className="flex items-center gap-2">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                                <Sparkles className="w-6 h-6" />
-                            </div>
-                            <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            <span className="text-2xl font-sans font-extrabold bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-600 bg-clip-text text-transparent tracking-tight">
                                 VISISH
                             </span>
                         </Link>
                         <div className="flex items-center gap-4">
-                            <Link href="/login" className="text-gray-300 hover:text-white transition-colors">
+                            <Link href="/login" className="text-slate-300 hover:text-amber-400 transition-colors">
                                 Sign In
                             </Link>
                             <Link href="/signup">
-                                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-lg hover:shadow-purple-500/50">
+                                <Button className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:shadow-lg hover:shadow-amber-500/20 text-slate-900 font-semibold">
                                     Get Started
                                 </Button>
                             </Link>
@@ -140,13 +138,13 @@ export default function PricingPage() {
                     {plans.map((plan, index) => (
                         <div
                             key={index}
-                            className={`relative bg-white/5 backdrop-blur-xl rounded-3xl p-8 border transition-all duration-300 hover:scale-105 ${plan.popular
-                                ? 'border-purple-500 shadow-2xl shadow-purple-500/30 scale-105'
-                                : 'border-white/10 hover:border-white/20'
+                            className={`relative bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border transition-all duration-300 hover:scale-105 ${plan.popular
+                                ? 'border-amber-500 shadow-2xl shadow-amber-500/20 scale-105'
+                                : 'border-white/10 hover:border-amber-500/30'
                                 }`}
                         >
                             {plan.popular && (
-                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-sm font-semibold">
+                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-amber-500 to-yellow-600 rounded-full text-sm font-semibold text-slate-900">
                                     {plan.badge}
                                 </div>
                             )}
@@ -156,30 +154,30 @@ export default function PricingPage() {
                                 {plan.icon}
                             </div>
 
-                            <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                            <p className="text-gray-400 mb-6">{plan.description}</p>
+                            <h3 className="text-2xl font-bold mb-2 text-white">{plan.name}</h3>
+                            <p className="text-slate-400 mb-6">{plan.description}</p>
 
                             {/* Price */}
                             <div className="mb-6">
                                 {typeof plan.price === 'number' ? (
                                     <>
                                         <div className="flex items-baseline justify-center gap-1">
-                                            <span className="text-3xl font-bold text-gray-400">{plan.currency}</span>
-                                            <span className="text-6xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                                            <span className="text-3xl font-bold text-slate-400">{plan.currency}</span>
+                                            <span className="text-6xl font-bold bg-gradient-to-r from-amber-200 to-yellow-500 bg-clip-text text-transparent">
                                                 {plan.price}
                                             </span>
                                         </div>
-                                        <div className="text-gray-400 mt-2">
+                                        <div className="text-slate-400 mt-2">
                                             {plan.period}
                                             {plan.downloads && (
-                                                <span className="block text-sm text-purple-400 mt-1">
+                                                <span className="block text-sm text-amber-400 mt-1">
                                                     {plan.downloads} downloads included
                                                 </span>
                                             )}
                                         </div>
                                     </>
                                 ) : (
-                                    <div className="text-5xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                                    <div className="text-5xl font-bold bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
                                         {plan.price}
                                     </div>
                                 )}
@@ -189,8 +187,8 @@ export default function PricingPage() {
                             <Link href={plan.href}>
                                 <Button
                                     className={`w-full mb-6 ${plan.popular
-                                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
-                                        : 'bg-white/10 hover:bg-white/20 border border-white/20'
+                                        ? 'bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-slate-900 font-semibold'
+                                        : 'bg-white/5 hover:bg-white/10 border border-white/10 text-white'
                                         }`}
                                 >
                                     {plan.cta}
@@ -211,23 +209,26 @@ export default function PricingPage() {
                 </div>
 
                 {/* Value Proposition */}
-                <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 mb-16">
-                    <h2 className="text-4xl font-bold mb-4">Why Choose VISISH?</h2>
-                    <div className="grid md:grid-cols-3 gap-8 mt-8">
-                        <div>
-                            <div className="text-5xl mb-4">⚡</div>
-                            <h3 className="text-xl font-bold mb-2">Instant Downloads</h3>
-                            <p className="text-blue-100">Get your resume in seconds, not hours</p>
-                        </div>
-                        <div>
-                            <div className="text-5xl mb-4">🎨</div>
-                            <h3 className="text-xl font-bold mb-2">Premium Templates</h3>
-                            <p className="text-blue-100">Designed by professionals, loved by recruiters</p>
-                        </div>
-                        <div>
-                            <div className="text-5xl mb-4">🤖</div>
-                            <h3 className="text-xl font-bold mb-2">AI-Powered</h3>
-                            <p className="text-blue-100">Smart suggestions to beat ATS systems</p>
+                <div className="bg-gradient-to-r from-slate-900 to-slate-800 border border-white/10 rounded-3xl p-12 mb-16 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-amber-500/5" />
+                    <div className="relative z-10">
+                        <h2 className="text-4xl font-bold mb-4 text-white">Why Choose VISISH?</h2>
+                        <div className="grid md:grid-cols-3 gap-8 mt-8">
+                            <div>
+                                <div className="text-5xl mb-4">⚡</div>
+                                <h3 className="text-xl font-bold mb-2 text-white">Instant Downloads</h3>
+                                <p className="text-slate-400">Get your resume in seconds, not hours</p>
+                            </div>
+                            <div>
+                                <div className="text-5xl mb-4">🎨</div>
+                                <h3 className="text-xl font-bold mb-2 text-white">Premium Templates</h3>
+                                <p className="text-slate-400">Designed by professionals, loved by recruiters</p>
+                            </div>
+                            <div>
+                                <div className="text-5xl mb-4">🤖</div>
+                                <h3 className="text-xl font-bold mb-2 text-white">AI-Powered</h3>
+                                <p className="text-slate-400">Smart suggestions to beat ATS systems</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -272,13 +273,13 @@ export default function PricingPage() {
                 </div>
 
                 {/* Final CTA */}
-                <div className="mt-16 bg-white/5 backdrop-blur-xl rounded-3xl p-12 border border-white/10">
-                    <h2 className="text-4xl font-bold mb-4">Ready to Build Your Perfect Resume?</h2>
-                    <p className="text-xl text-gray-300 mb-8">
+                <div className="mt-16 bg-slate-900/50 backdrop-blur-xl rounded-3xl p-12 border border-white/10">
+                    <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-amber-200 to-yellow-500 bg-clip-text text-transparent">Ready to Build Your Perfect Resume?</h2>
+                    <p className="text-xl text-slate-400 mb-8">
                         Join thousands of professionals who landed their dream jobs with VISISH
                     </p>
                     <Link href="/signup">
-                        <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:shadow-2xl hover:shadow-purple-500/50 text-lg px-8 py-4">
+                        <Button className="bg-gradient-to-r from-amber-500 to-yellow-600 hover:shadow-2xl hover:shadow-amber-500/20 text-lg px-8 py-4 text-slate-900 font-semibold">
                             Start Creating Now
                         </Button>
                     </Link>
@@ -291,10 +292,7 @@ export default function PricingPage() {
                     <div className="grid md:grid-cols-4 gap-8">
                         <div>
                             <div className="flex items-center gap-2 mb-4">
-                                <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                                    <Sparkles className="w-5 h-5" />
-                                </div>
-                                <span className="text-xl font-bold">VISISH</span>
+                                <span className="text-xl font-sans font-extrabold tracking-tight">VISISH</span>
                             </div>
                             <p className="text-gray-400 text-sm">
                                 Premium resume builder for professionals
@@ -324,7 +322,7 @@ export default function PricingPage() {
                             </ul>
                         </div>
                     </div>
-                    <div className="border-t border-white/10 mt-8 pt-8 text-center text-sm text-gray-400">
+                    <div className="border-t border-white/10 mt-8 pt-8 text-center text-sm text-slate-500">
                         © 2024 VISISH. All rights reserved. Made with ❤️ in India
                     </div>
                 </div>

@@ -21,6 +21,7 @@ interface TechTemplateProps {
     colorTheme: ColorTheme;
     fontFamily: string;
     fontSize: string;
+    spacing?: 'compact' | 'standard';
     sectionOrder?: string[];
     onReorder?: (newOrder: string[]) => void;
 }
@@ -30,6 +31,7 @@ export default function TechTemplate({
     colorTheme,
     fontFamily,
     fontSize,
+    spacing = 'standard',
     sectionOrder = [],
     onReorder
 }: TechTemplateProps) {
@@ -160,7 +162,7 @@ export default function TechTemplate({
     const currentOrder = sectionOrder.length > 0 ? sectionOrder : defaultOrder;
 
     return (
-        <div className={`bg-gray-50 ${fontFamily} ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-gray-50 ${fontFamily} ${fontSize} mx-auto print:mx-0`} style={{ width: '210mm', minHeight: '297mm' }}>
             {/* Header */}
             <div className="bg-gray-900 text-white px-8 py-6">
                 <h1 className="text-4xl font-bold mb-2 font-mono">{personalInfo.fullName || 'Your Name'}</h1>

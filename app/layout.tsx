@@ -7,8 +7,8 @@ import Providers from "@/components/Providers";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "VISISH - AI-Powered Resume Builder",
-    description: "Build professional resumes with AI-powered job matching and ATS optimization",
+    title: "Visish - Build Your Professional Future",
+    description: "Create ATS-friendly resumes and land your dream job with Visish.",
 };
 
 export default function RootLayout({

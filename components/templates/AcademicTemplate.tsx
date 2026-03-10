@@ -21,6 +21,7 @@ interface AcademicTemplateProps {
     colorTheme: ColorTheme;
     fontFamily: string;
     fontSize: string;
+    spacing?: 'compact' | 'standard';
     sectionOrder?: string[];
     onReorder?: (newOrder: string[]) => void;
 }
@@ -30,6 +31,7 @@ export default function AcademicTemplate({
     colorTheme,
     fontFamily,
     fontSize,
+    spacing = 'standard',
     sectionOrder = [],
     onReorder
 }: AcademicTemplateProps) {
@@ -154,7 +156,7 @@ export default function AcademicTemplate({
     const currentOrder = sectionOrder.length > 0 ? sectionOrder : defaultOrder;
 
     return (
-        <div className={`bg-white p-8 ${fontFamily} ${fontSize} font-serif w-full mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white p-8 ${fontFamily} ${fontSize} font-serif mx-auto print:mx-0`} style={{ width: '210mm', minHeight: '297mm' }}>
             {/* Header */}
             <div className="text-center border-b-2 border-gray-800 pb-4 mb-6">
                 <h1 className="text-3xl font-bold mb-2">{personalInfo.fullName || 'Your Name'}</h1>

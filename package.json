@@ -1,7 +1,7 @@
 {
   "name": "visish",
   "version": "1.0.0",
-  "description": "AI-Powered Resume Builder & Job Match Platform",
+  "description": "Professional Resume Builder & Career Platform",
   "private": true,
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

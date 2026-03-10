@@ -8,12 +8,16 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import UsageWidget from '@/components/subscription/UsageWidget';
 import PricingModal from '@/components/subscription/PricingModal';
-import DashboardNavbar from '@/components/dashboard/DashboardNavbar';
+import WelcomeGuide from '@/components/dashboard/WelcomeGuide';
+// import DashboardNavbar from '@/components/dashboard/DashboardNavbar'; // Removed as it is in layout
+
 import { formatDate } from '@/lib/utils';
 import {
     Users, FileText, DollarSign, TrendingUp, TrendingDown, Download, Eye, Sparkles,
-    CreditCard, LogIn, RefreshCw, AlertCircle, CheckCircle, XCircle, Clock
+    CreditCard, LogIn, RefreshCw, AlertCircle, CheckCircle, XCircle, Clock,
+    LayoutDashboard, Briefcase, Megaphone
 } from 'lucide-react';
+
 
 interface Resume {
     id: string;
@@ -122,25 +126,8 @@ export default function DashboardPage() {
         }
     };
 
-    const createNewResume = async () => {
-        try {
-            const response = await fetch('/api/resumes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    title: 'Untitled Resume',
-                }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                router.push(`/editor/${data.resume.id}`);
-            }
-        } catch (error) {
-            console.error('Failed to create resume:', error);
-        }
+    const createNewResume = () => {
+        router.push('/builder/new');
     };
 
     const handleSelectPlan = async (plan: string, gateway: 'razorpay', couponCode?: string) => {
@@ -194,407 +181,297 @@ export default function DashboardPage() {
 
     if (status === 'loading' || loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen bg-slate-950 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Loading...</p>
+                    <div className="relative w-16 h-16 mx-auto">
+                        <div className="absolute inset-0 border-t-2 border-amber-500 rounded-full animate-spin"></div>
+                        <div className="absolute inset-2 border-r-2 border-yellow-500 rounded-full animate-spin"></div>
+                        <div className="absolute inset-4 border-b-2 border-purple-500 rounded-full animate-spin"></div>
+                    </div>
+                    <p className="mt-6 text-slate-400 animate-pulse font-medium">Loading your dashboard...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-            <DashboardNavbar />
-
-            {/* Main Content */}
+        <>
             <div className="container mx-auto px-4 py-8">
                 {isAdmin ? (
-                    /* ADMIN VIEW - 2 Sections */
+                    /* ADMIN VIEW */
                     <div className="space-y-8">
-                        {/* Section 1: Resume Management */}
-                        <div className="bg-white rounded-2xl shadow-lg p-6">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-4">📋 Resume Management</h2>
-                            <div className="grid md:grid-cols-2 gap-4">
-                                <Card
-                                    hover
-                                    className="border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50 cursor-pointer flex items-center justify-center min-h-[150px]"
-                                    onClick={() => router.push('/templates')}
+                        <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8">
+                            <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-amber-200 to-yellow-500 bg-clip-text text-transparent">Resume Management</h2>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <div
+                                    className="group p-6 bg-slate-900/50 hover:bg-slate-800 border border-white/5 hover:border-amber-500/30 rounded-xl cursor-pointer transition-all hover:scale-[1.02] shadow-sm hover:shadow-lg hover:shadow-amber-500/10"
+                                    onClick={() => router.push('/admin')}
                                 >
-                                    <div className="text-center">
-                                        <div className="text-4xl mb-3">📋</div>
-                                        <h3 className="text-lg font-semibold text-purple-600">Choose Template</h3>
-                                        <p className="text-sm text-gray-600 mt-1">Start with pre-filled resume</p>
+                                    <div className="w-12 h-12 bg-indigo-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                        <LayoutDashboard className="w-6 h-6 text-indigo-400" />
                                     </div>
-                                </Card>
-                                <Card
-                                    hover
-                                    className="border-2 border-dashed border-blue-300 bg-blue-50 cursor-pointer flex items-center justify-center min-h-[150px]"
+                                    <h3 className="text-lg font-bold text-white mb-2">Admin Console</h3>
+                                    <p className="text-slate-400 text-sm">Full statistics, announcements, and users</p>
+                                </div>
+                                <div
+                                    className="group p-6 bg-slate-900/50 hover:bg-slate-800 border border-white/5 hover:border-amber-500/30 rounded-xl cursor-pointer transition-all hover:scale-[1.02] shadow-sm hover:shadow-lg hover:shadow-amber-500/10"
+                                    onClick={() => router.push('/builder/new')}
+                                >
+                                    <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                        <FileText className="w-6 h-6 text-purple-400" />
+                                    </div>
+                                    <h3 className="text-lg font-bold text-white mb-2">Choose Template</h3>
+                                    <p className="text-slate-400 text-sm">Start with a professionally designed template</p>
+                                </div>
+                                <div
+                                    className="group p-6 bg-slate-900/50 hover:bg-slate-800 border border-white/5 hover:border-amber-500/30 rounded-xl cursor-pointer transition-all hover:scale-[1.02] shadow-sm hover:shadow-lg hover:shadow-amber-500/10"
                                     onClick={createNewResume}
                                 >
-                                    <div className="text-center">
-                                        <div className="text-4xl mb-3">➕</div>
-                                        <h3 className="text-lg font-semibold text-blue-600">Create Blank Resume</h3>
-                                        <p className="text-sm text-gray-600 mt-1">Start from scratch</p>
+                                    <div className="w-12 h-12 bg-amber-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                        <Sparkles className="w-6 h-6 text-amber-400" />
                                     </div>
-                                </Card>
+                                    <h3 className="text-lg font-bold text-white mb-2">Create Blank Resume</h3>
+                                    <p className="text-slate-400 text-sm">Start from scratch with an empty canvas</p>
+                                </div>
+                                <div
+                                    className="group p-6 bg-slate-900/50 hover:bg-slate-800 border border-white/5 hover:border-amber-500/30 rounded-xl cursor-pointer transition-all hover:scale-[1.02] shadow-sm hover:shadow-lg hover:shadow-amber-500/10"
+                                    onClick={() => router.push('/admin/coupons')}
+                                >
+                                    <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                        <DollarSign className="w-6 h-6 text-green-400" />
+                                    </div>
+                                    <h3 className="text-lg font-bold text-white mb-2">Manage Coupons</h3>
+                                    <p className="text-slate-400 text-sm">Create and track discount codes</p>
+                                </div>
+
                             </div>
                         </div>
 
-                        {/* Section 2: Admin Dashboard */}
-                        <div className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white rounded-2xl shadow-lg p-6">
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-2xl font-bold flex items-center gap-2">
-                                    <Sparkles className="w-6 h-6" />
-                                    📊 Admin Dashboard
-                                </h2>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={fetchAdminStats}
-                                    className="bg-white/10 border-white/20 hover:bg-white/20 text-white"
-                                >
-                                    <RefreshCw className="w-4 h-4 mr-2" />
-                                    Refresh Data
+                        {/* Old Admin Dashboard Section - Simplified for dark mode consistency */}
+                        <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8">
+                            <div className="flex justify-between items-center mb-8">
+                                <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Admin Stats</h2>
+                                <Button variant="outline" size="sm" onClick={fetchAdminStats} className="border-white/20 text-white hover:bg-white/10">
+                                    <RefreshCw className="w-4 h-4 mr-2" /> Refresh
                                 </Button>
                             </div>
-
                             {adminStats ? (
-                                <>
-                                    {/* Key Metrics */}
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                                        <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-xl rounded-xl p-4 border border-blue-500/30">
-                                            <div className="text-xs text-blue-300 mb-1">Monthly Recurring Revenue</div>
-                                            <div className="text-2xl font-bold">₹{adminStats.financialMetrics.mrr.toLocaleString()}</div>
+                                <div className="space-y-6">
+                                    {/* Primary Stats */}
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div className="p-4 bg-white/5 rounded-xl border border-white/5 shadow-sm">
+                                            <div className="text-slate-400 text-sm mb-1">Total Users</div>
+                                            <div className="text-2xl font-bold text-white">{adminStats.totalUsers}</div>
+                                            <div className="text-xs text-green-400 mt-1">+{adminStats.loginStats.today} today</div>
                                         </div>
-                                        <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl rounded-xl p-4 border border-purple-500/30">
-                                            <div className="text-xs text-purple-300 mb-1">Annual Recurring Revenue</div>
-                                            <div className="text-2xl font-bold">₹{adminStats.financialMetrics.arr.toLocaleString()}</div>
+                                        <div className="p-4 bg-white/5 rounded-xl border border-white/5 shadow-sm">
+                                            <div className="text-slate-400 text-sm mb-1">Total Revenue</div>
+                                            <div className="text-2xl font-bold text-green-400">₹{adminStats.totalRevenue}</div>
+                                            <div className="text-xs text-slate-500 mt-1">Lifetime</div>
                                         </div>
-                                        <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-xl rounded-xl p-4 border border-green-500/30">
-                                            <div className="text-xs text-green-300 mb-1">Avg Revenue Per User</div>
-                                            <div className="text-2xl font-bold">₹{adminStats.financialMetrics.arpu.toFixed(0)}</div>
+                                        <div className="p-4 bg-white/5 rounded-xl border border-white/5 shadow-sm">
+                                            <div className="text-slate-400 text-sm mb-1">MRR</div>
+                                            <div className="text-2xl font-bold text-blue-400">₹{adminStats.financialMetrics.mrr}</div>
+                                            <div className="text-xs text-slate-500 mt-1">Monthly Recurring</div>
                                         </div>
-                                    </div>
-
-                                    {/* Stats Grid */}
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                                        <div
-                                            className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors"
-                                            onClick={() => router.push('/admin/users')}
-                                        >
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Users className="w-4 h-4 text-blue-400" />
-                                                <div className="text-xs text-gray-400">Total Users</div>
-                                            </div>
-                                            <div className="text-2xl font-bold">{adminStats.totalUsers}</div>
-                                            <div className="text-xs text-gray-500 mt-1">{adminStats.paidUsers} paid • {adminStats.freeUsers} free</div>
-                                        </div>
-                                        <div className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <DollarSign className="w-4 h-4 text-green-400" />
-                                                <div className="text-xs text-gray-400">Revenue</div>
-                                            </div>
-                                            <div className="text-2xl font-bold">₹{adminStats.totalRevenue}</div>
-                                            <div className="text-xs text-gray-500 mt-1">All time</div>
-                                        </div>
-                                        <div className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <FileText className="w-4 h-4 text-purple-400" />
-                                                <div className="text-xs text-gray-400">Resumes</div>
-                                            </div>
-                                            <div className="text-2xl font-bold">{adminStats.totalResumes}</div>
-                                            <div className="text-xs text-gray-500 mt-1">{adminStats.totalDownloads} downloads</div>
-                                        </div>
-                                        <div
-                                            className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors"
-                                            onClick={() => router.push('/admin/users')}
-                                        >
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Eye className="w-4 h-4 text-cyan-400" />
-                                                <div className="text-xs text-gray-400">Active (24h)</div>
-                                            </div>
-                                            <div className="text-2xl font-bold">{adminStats.activeUsers24h}</div>
-                                            <div className="text-xs text-gray-500 mt-1">Daily active</div>
-                                        </div>
-                                        <div
-                                            className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors"
-                                            onClick={() => router.push('/admin/coupons')}
-                                        >
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Sparkles className="w-4 h-4 text-yellow-400" />
-                                                <div className="text-xs text-gray-400">Coupons</div>
-                                            </div>
-                                            <div className="text-2xl font-bold">Manage</div>
-                                            <div className="text-xs text-gray-500 mt-1">Create & Edit</div>
+                                        <div className="p-4 bg-white/5 rounded-xl border border-white/5 shadow-sm cursor-pointer hover:bg-white/10 transition-colors" onClick={() => router.push('/admin/users')}>
+                                            <div className="text-slate-400 text-sm mb-1">Active Users (24h)</div>
+                                            <div className="text-2xl font-bold text-purple-400">{adminStats.activeUsers24h}</div>
+                                            <div className="text-xs text-slate-500 mt-1">Click to view</div>
                                         </div>
                                     </div>
 
-                                    {/* Payment & Login */}
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <div className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10">
-                                            <div className="flex items-center gap-2 mb-3">
-                                                <CreditCard className="w-4 h-4 text-blue-400" />
-                                                <h3 className="font-semibold">Payments</h3>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-gray-400">Success Rate</span>
-                                                    <span className="font-bold text-green-400">{adminStats.paymentStats.successRate.toFixed(1)}%</span>
-                                                </div>
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-gray-400">Successful</span>
-                                                    <span>{adminStats.paymentStats.successful}</span>
-                                                </div>
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-gray-400">Failed</span>
-                                                    <span className="text-red-400">{adminStats.paymentStats.failed}</span>
-                                                </div>
-                                            </div>
+                                    {/* Secondary Stats */}
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                        <div className="p-4 bg-white/5 rounded-xl border border-white/5 shadow-sm">
+                                            <div className="text-slate-400 text-sm mb-1">Successful Payments</div>
+                                            <div className="text-xl font-bold text-white">{adminStats.paymentStats.successful}</div>
+                                            <div className="text-xs text-green-400 mt-1">{(adminStats.paymentStats.successRate * 100).toFixed(1)}% Rate</div>
                                         </div>
-                                        <div className="bg-white/5 backdrop-blur-xl rounded-xl p-4 border border-white/10">
-                                            <div className="flex items-center gap-2 mb-3">
-                                                <LogIn className="w-4 h-4 text-purple-400" />
-                                                <h3 className="font-semibold">Logins</h3>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-gray-400">Today</span>
-                                                    <span className="font-bold">{adminStats.loginStats.today}</span>
-                                                </div>
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-gray-400">This Week</span>
-                                                    <span>{adminStats.loginStats.thisWeek}</span>
-                                                </div>
-                                                <div className="flex justify-between text-sm">
-                                                    <span className="text-gray-400">This Month</span>
-                                                    <span>{adminStats.loginStats.thisMonth}</span>
-                                                </div>
-                                            </div>
+                                        <div className="p-4 bg-white/5 rounded-xl border border-white/5 shadow-sm">
+                                            <div className="text-slate-400 text-sm mb-1">Failed Payments</div>
+                                            <div className="text-xl font-bold text-red-400">{adminStats.paymentStats.failed}</div>
+                                        </div>
+                                        <div className="p-4 bg-white/5 rounded-xl border border-white/5 shadow-sm">
+                                            <div className="text-slate-400 text-sm mb-1">Total Resumes</div>
+                                            <div className="text-xl font-bold text-yellow-400">{adminStats.totalResumes}</div>
+                                        </div>
+                                        <div className="p-4 bg-white/5 rounded-xl border border-white/5 shadow-sm">
+                                            <div className="text-slate-400 text-sm mb-1">Paid Users</div>
+                                            <div className="text-xl font-bold text-pink-400">{adminStats.paidUsers}</div>
                                         </div>
                                     </div>
-                                </>
-                            ) : (
-                                <div className="text-center py-8">
-                                    <div className="text-gray-400">Loading admin stats...</div>
                                 </div>
+                            ) : (
+                                <div className="text-center text-gray-500 py-8">Loading stats...</div>
                             )}
                         </div>
                     </div>
                 ) : (
                     /* REGULAR USER VIEW */
-                    <div className="grid lg:grid-cols-3 gap-6 mb-8">
-                        {/* Main Content - 2 columns */}
-                        <div className="lg:col-span-2">
-                            <div className="mb-8">
-                                <h2 className="text-3xl font-bold text-gray-900 mb-2">My Resumes</h2>
-                                <p className="text-gray-600">Create and manage your professional resumes</p>
+                    <div className="grid lg:grid-cols-3 gap-8">
+                        <div className="lg:col-span-2 space-y-8">
+                            {/* Header */}
+                            <div>
+                                <h1 className="text-4xl font-bold mb-3 bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">My Resumes</h1>
+                                <p className="text-slate-400 text-lg">Manage your professional career portfolio</p>
                             </div>
 
-                            <div className="grid md:grid-cols-2 gap-6">
-                                {/* Choose Template Card */}
-                                <Card
-                                    hover
-                                    className="border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50 cursor-pointer flex items-center justify-center min-h-[200px]"
-                                    onClick={() => router.push('/templates')}
+                            {/* Action Grid */}
+                            <div className="grid md:grid-cols-3 gap-4">
+                                <div
+                                    onClick={() => router.push('/builder/new')}
+                                    className="group relative h-40 bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-2xl border border-purple-500/20 cursor-pointer overflow-hidden transition-all hover:border-purple-500/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)] content-visibility-auto"
                                 >
-                                    <div className="text-center">
-                                        <div className="text-5xl mb-4">📋</div>
-                                        <h3 className="text-xl font-semibold text-purple-600">Choose Template</h3>
-                                        <p className="text-sm text-gray-600 mt-2">Start with pre-filled resume</p>
+                                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="relative h-full flex flex-col items-center justify-center p-4 text-center">
+                                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform backdrop-blur-sm">
+                                            <LayoutDashboard className="w-5 h-5 text-purple-300" />
+                                        </div>
+                                        <span className="font-semibold text-white">Choose Template</span>
                                     </div>
-                                </Card>
+                                </div>
 
-                                {/* Import Resume Card */}
-                                <Card
-                                    hover
-                                    className="border-2 border-dashed border-green-300 bg-green-50 cursor-pointer flex items-center justify-center min-h-[200px] relative"
-                                    onClick={() => document.getElementById('resume-upload')?.click()}
-                                >
+                                <div className="relative group h-40 bg-slate-900/50 rounded-2xl border border-white/5 shadow-sm cursor-pointer overflow-hidden transition-all hover:shadow-md hover:border-white/10 hover:bg-slate-800/50 backdrop-blur-sm">
                                     <input
                                         type="file"
                                         id="resume-upload"
-                                        className="hidden"
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                         accept=".pdf,.docx,.doc"
                                         onChange={async (e) => {
                                             const file = e.target.files?.[0];
                                             if (!file) return;
-
                                             try {
                                                 setLoading(true);
                                                 const formData = new FormData();
                                                 formData.append('resume', file);
-
-                                                // 1. Upload and Parse
-                                                const uploadRes = await fetch('/api/upload', {
-                                                    method: 'POST',
-                                                    body: formData
-                                                });
-
-                                                if (!uploadRes.ok) {
-                                                    const err = await uploadRes.json();
-                                                    throw new Error(err.error || 'Upload failed');
-                                                }
-
+                                                const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData });
+                                                if (!uploadRes.ok) throw new Error('Upload failed');
                                                 const { structuredData, fileName } = await uploadRes.json();
-
-                                                // 2. Create New Resume with Parsed Data
                                                 const createRes = await fetch('/api/resumes', {
                                                     method: 'POST',
                                                     headers: { 'Content-Type': 'application/json' },
-                                                    body: JSON.stringify({
-                                                        title: `Imported: ${fileName.replace(/\.[^/.]+$/, "")}`,
-                                                        data: structuredData
-                                                    })
+                                                    body: JSON.stringify({ title: `Imported: ${fileName.replace(/\.[^/.]+$/, "")}`, data: structuredData })
                                                 });
-
                                                 if (createRes.ok) {
                                                     const { resume } = await createRes.json();
-                                                    router.push(`/editor/${resume.id}`);
+                                                    router.push(`/builder/${resume.id}`);
                                                 }
                                             } catch (error) {
-                                                console.error('Import failed:', error);
-                                                alert('Failed to import resume. Please try again.');
+                                                console.error(error);
+                                                alert('Failed to import resume.');
                                                 setLoading(false);
                                             }
                                         }}
                                     />
-                                    <div className="text-center">
-                                        <div className="text-5xl mb-4">📤</div>
-                                        <h3 className="text-xl font-semibold text-green-600">Import Resume</h3>
-                                        <p className="text-sm text-gray-600 mt-2">Auto-fill from PDF/Word</p>
-                                    </div>
-                                </Card>
-
-                                {/* Create New Resume Card */}
-                                <Card
-                                    hover
-                                    className="border-2 border-dashed border-blue-300 bg-blue-50 cursor-pointer flex items-center justify-center min-h-[200px]"
-                                    onClick={createNewResume}
-                                >
-                                    <div className="text-center">
-                                        <div className="text-5xl mb-4">➕</div>
-                                        <h3 className="text-xl font-semibold text-blue-600">Create Blank Resume</h3>
-                                        <p className="text-sm text-gray-600 mt-2">Start from scratch</p>
-                                    </div>
-                                </Card>
-
-                                {/* Resume Cards */}
-                                {resumes.map((resume) => (
-                                    <Card key={resume.id} className="overflow-hidden">
-                                        {/* Preview Thumbnail */}
-                                        <div
-                                            className="h-40 bg-gradient-to-br from-gray-100 to-gray-200 border-b border-gray-200 flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
-                                            onClick={() => router.push(`/editor/${resume.id}`)}
-                                        >
-                                            <div className="text-center">
-                                                <div className="text-6xl mb-2">📄</div>
-                                                <p className="text-xs text-gray-500">Click to preview</p>
-                                            </div>
+                                    <div className="h-full flex flex-col items-center justify-center p-4 text-center pointer-events-none">
+                                        <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                            <Download className="w-5 h-5 text-green-400" />
                                         </div>
+                                        <span className="font-semibold text-white">Import Resume</span>
+                                    </div>
+                                </div>
 
-                                        {/* Resume Info */}
-                                        <div className="p-4">
-                                            <h3 className="text-lg font-semibold text-gray-900 mb-1 truncate">
-                                                {resume.title}
-                                            </h3>
-                                            <p className="text-xs text-gray-500 mb-1">
-                                                Template: <span className="capitalize">{resume.templateType}</span>
-                                            </p>
-                                            <p className="text-xs text-gray-400">
-                                                Updated: {formatDate(resume.updatedAt)}
-                                            </p>
-
-                                            {/* Action Buttons */}
-                                            <div className="flex gap-2 mt-4">
-                                                <Button
-                                                    size="sm"
-                                                    onClick={() => router.push(`/editor/${resume.id}`)}
-                                                    className="flex-1"
-                                                >
-                                                    ✏️ Edit
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    onClick={() => router.push(`/analysis/${resume.id}`)}
-                                                    title="AI Analysis"
-                                                >
-                                                    📊
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    onClick={() => router.push(`/dashboard/jobs?resumeId=${resume.id}`)}
-                                                    title="Job Matches"
-                                                    className="text-blue-600 hover:bg-blue-50"
-                                                >
-                                                    💼
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    onClick={async (e) => {
-                                                        e.stopPropagation(); // Prevent card click
-                                                        e.preventDefault(); // Prevent any default action
-                                                        const confirmed = window.confirm('Are you sure you want to delete this resume?');
-                                                        if (confirmed) {
-                                                            try {
-                                                                console.log('Deleting resume:', resume.id);
-                                                                const response = await fetch(`/api/resumes/${resume.id}`, {
-                                                                    method: 'DELETE',
-                                                                });
-
-                                                                console.log('Delete response status:', response.status);
-                                                                const data = await response.json();
-                                                                console.log('Delete response data:', data);
-
-                                                                if (response.ok) {
-                                                                    alert('Resume deleted successfully!');
-                                                                    fetchResumes();
-                                                                } else {
-                                                                    alert(`Failed to delete: ${data.error || 'Unknown error'}`);
-                                                                    console.error('Delete failed:', data);
-                                                                }
-                                                            } catch (error) {
-                                                                console.error('Failed to delete resume:', error);
-                                                                alert('Error deleting resume. Check console for details.');
-                                                            }
-                                                        } else {
-                                                            console.log('Delete cancelled by user');
-                                                        }
-                                                    }}
-                                                    className="text-red-600 hover:bg-red-50"
-                                                >
-                                                    🗑️
-                                                </Button>
-                                            </div>
+                                <div className="group h-40 bg-slate-900/50 rounded-2xl border border-dashed border-slate-700 cursor-pointer overflow-hidden transition-all hover:bg-slate-800/50 hover:border-amber-500/50 backdrop-blur-sm" onClick={createNewResume}>
+                                    <div className="h-full flex flex-col items-center justify-center p-4 text-center">
+                                        <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                            <Sparkles className="w-5 h-5 text-amber-500" />
                                         </div>
-                                    </Card>
-                                ))}
+                                        <span className="font-semibold text-white">Create Blank</span>
+                                    </div>
+                                </div>
                             </div>
 
-                            {resumes.length === 0 && !loading && (
-                                <div className="text-center py-12">
-                                    <p className="text-gray-600 text-lg">No resumes yet. Create your first one!</p>
-                                </div>
-                            )}
+                            {/* Resume List */}
+                            <div className="space-y-4">
+                                {resumes.map((resume) => (
+                                    <div
+                                        key={resume.id}
+                                        className="group relative bg-slate-900/50 hover:bg-slate-800/80 border border-white/5 rounded-2xl p-5 transition-all hover:border-white/10 hover:shadow-lg flex items-center gap-6 backdrop-blur-sm"
+                                    >
+                                        <div
+                                            className="w-16 h-16 rounded-xl bg-gradient-to-br from-slate-800 to-slate-700 flex items-center justify-center flex-shrink-0 cursor-pointer hover:ring-2 ring-amber-500/50 transition-all font-serif text-2xl text-slate-400 select-none"
+                                            onClick={() => router.push(`/builder/${resume.id}`)}
+                                        >
+                                            Aa
+                                        </div>
+
+                                        <div className="flex-1 min-w-0">
+                                            <h3 className="text-xl font-bold text-white mb-1 truncate group-hover:text-amber-400 transition-colors cursor-pointer" onClick={() => router.push(`/builder/${resume.id}`)}>
+                                                {resume.title}
+                                            </h3>
+                                            <div className="flex items-center gap-4 text-sm text-slate-500">
+                                                <span className="flex items-center gap-1.5">
+                                                    <Clock className="w-3.5 h-3.5" />
+                                                    {formatDate(resume.updatedAt)}
+                                                </span>
+                                                <span className="w-1 h-1 rounded-full bg-slate-600" />
+                                                <span className="capitalize">{resume.templateType || 'Standard'} Template</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-4 group-hover:translate-x-0">
+                                            <button
+                                                onClick={() => router.push(`/builder/${resume.id}`)}
+                                                className="p-2.5 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition-all"
+                                                title="Edit Resume"
+                                            >
+                                                <FileText className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => router.push(`/analysis/${resume.id}`)}
+                                                className="p-2.5 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500 hover:text-white transition-all"
+                                                title="AI Analysis"
+                                            >
+                                                <Sparkles className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => router.push(`/dashboard/jobs?resumeId=${resume.id}`)}
+                                                className="p-2.5 rounded-lg bg-green-500/10 text-green-400 hover:bg-green-500 hover:text-white transition-all"
+                                                title="Find Jobs"
+                                            >
+                                                <Briefcase className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={async (e) => {
+                                                    e.stopPropagation();
+                                                    if (window.confirm('Delete this resume?')) {
+                                                        try {
+                                                            const res = await fetch(`/api/resumes/${resume.id}`, { method: 'DELETE' });
+                                                            if (res.ok) { fetchResumes(); }
+                                                        } catch (err) { console.error(err); }
+                                                    }
+                                                }}
+                                                className="p-2.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all ml-2"
+                                                title="Delete"
+                                            >
+                                                <XCircle className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+
+                                {resumes.length === 0 && !loading && (
+                                    <WelcomeGuide onCreateClick={createNewResume} />
+                                )}
+                            </div>
                         </div>
 
-                        {/* Sidebar - 1 column */}
-                        <div className="space-y-6">
-                            <UsageWidget onUpgrade={() => setShowPricingModal(true)} />
+                        {/* Sidebar */}
+                        <div>
+                            <div className="sticky top-24">
+                                <UsageWidget onUpgrade={() => setShowPricingModal(true)} />
+                            </div>
                         </div>
                     </div>
                 )}
             </div>
 
-            {/* Pricing Modal */}
             <PricingModal
                 isOpen={showPricingModal}
                 onClose={() => setShowPricingModal(false)}
                 onSelectPlan={handleSelectPlan}
             />
-        </div>
+        </>
     );
 }

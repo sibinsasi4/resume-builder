@@ -21,6 +21,7 @@ interface CompactTemplateProps {
     colorTheme: ColorTheme;
     fontFamily: string;
     fontSize: string;
+    spacing?: 'compact' | 'standard';
     sectionOrder?: string[];
     onReorder?: (newOrder: string[]) => void;
 }
@@ -30,6 +31,7 @@ export default function CompactTemplate({
     colorTheme,
     fontFamily,
     fontSize,
+    spacing = 'standard',
     sectionOrder = [],
     onReorder
 }: CompactTemplateProps) {
@@ -175,7 +177,7 @@ export default function CompactTemplate({
     );
 
     return (
-        <div className={`bg-white p-6 ${fontFamily} ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white p-6 ${fontFamily} ${fontSize} mx-auto print:mx-0`} style={{ width: '210mm', minHeight: '297mm' }}>
             {/* Compact Header */}
             <div className="mb-4 pb-3 border-b-2" style={{ borderColor: colorTheme.primary }}>
                 <h1 className="text-3xl font-bold" style={{ color: colorTheme.primary }}>

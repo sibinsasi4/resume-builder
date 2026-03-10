@@ -90,7 +90,7 @@ function SortableExperienceItem({
                         type="text"
                         value={exp.company}
                         onChange={(e) => updateExperience(index, 'company', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="Company name"
                     />
                 </div>
@@ -100,7 +100,7 @@ function SortableExperienceItem({
                         type="text"
                         value={exp.position}
                         onChange={(e) => updateExperience(index, 'position', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="Job title"
                     />
                 </div>
@@ -113,7 +113,7 @@ function SortableExperienceItem({
                         type="text"
                         value={exp.location}
                         onChange={(e) => updateExperience(index, 'location', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="City, State"
                     />
                 </div>
@@ -137,7 +137,7 @@ function SortableExperienceItem({
                         type="text"
                         value={exp.startDate}
                         onChange={(e) => updateExperience(index, 'startDate', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="2020-01"
                     />
                 </div>
@@ -147,7 +147,7 @@ function SortableExperienceItem({
                         type="text"
                         value={exp.endDate}
                         onChange={(e) => updateExperience(index, 'endDate', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="Present"
                         disabled={exp.current}
                     />
@@ -171,7 +171,7 @@ function SortableExperienceItem({
                                 type="text"
                                 value={desc}
                                 onChange={(e) => updateDescription(index, descIndex, e.target.value)}
-                                className="flex-1 px-3 py-2 border rounded-lg text-sm"
+                                className="flex-1 px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                                 placeholder="Describe your achievement..."
                             />
                             <button

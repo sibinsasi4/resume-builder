@@ -22,6 +22,7 @@ interface ModernTemplateProps {
     colorTheme: ColorTheme;
     fontFamily: string;
     fontSize: string;
+    spacing?: 'compact' | 'standard';
     sectionOrder?: string[];
     onReorder?: (newOrder: string[]) => void;
 }
@@ -31,6 +32,7 @@ export default function ModernTemplate({
     colorTheme,
     fontFamily,
     fontSize,
+    spacing = 'standard',
     sectionOrder = [],
     onReorder
 }: ModernTemplateProps) {
@@ -61,6 +63,23 @@ export default function ModernTemplate({
         }
     };
 
+    // Define column assignments
+    // In Compact mode, move Achievements to sidebar to save vertical space in main column
+    const sidebarSectionIds = ['education', 'skills', 'languages'];
+    const mainSectionIds = ['summary', 'experience', 'projects', 'certifications', 'achievements'];
+
+    if (spacing === 'compact' && experience.length > 2) {
+        // Move Achievements to sidebar only if experience is long, to save space in main column
+        const achievementIdx = mainSectionIds.indexOf('achievements');
+        if (achievementIdx !== -1) mainSectionIds.splice(achievementIdx, 1);
+        if (!sidebarSectionIds.includes('achievements')) sidebarSectionIds.push('achievements');
+
+        // Move Certifications to sidebar as well if desired or if experience is long
+        const certIdx = mainSectionIds.indexOf('certifications');
+        if (certIdx !== -1) mainSectionIds.splice(certIdx, 1);
+        if (!sidebarSectionIds.includes('certifications')) sidebarSectionIds.push('certifications');
+    }
+
     // Define all sections
     const sections: Record<string, React.ReactNode> = {
         summary: summary && (
@@ -84,7 +103,7 @@ export default function ModernTemplate({
                 >
                     Work Experience
                 </h2>
-                <div className="space-y-6">
+                <div className={`${spacing === 'compact' ? 'space-y-4' : 'space-y-6'}`}>
                     {experience.map((exp) => (
                         <div key={exp.id} className="break-inside-avoid">
                             <div className="flex justify-between items-baseline mb-1">
@@ -94,13 +113,13 @@ export default function ModernTemplate({
                                 </span>
                             </div>
 
-                            <div className="flex items-center gap-2 mb-3 text-sm font-medium" style={{ color: colorTheme.primary }}>
+                            <div className={`flex items-center gap-2 ${spacing === 'compact' ? 'mb-2' : 'mb-3'} text-sm font-medium`} style={{ color: colorTheme.primary }}>
                                 <span>{exp.company}</span>
                                 <span className="text-slate-300">•</span>
                                 <span className="text-slate-500 font-normal">{exp.location}</span>
                             </div>
 
-                            <ul className="list-disc list-outside ml-4 space-y-1.5 text-slate-700 text-sm">
+                            <ul className={`list-disc list-outside ml-4 ${spacing === 'compact' ? 'space-y-1' : 'space-y-1.5'} text-slate-700 text-sm`}>
                                 {exp.description.map((desc, idx) => (
                                     <li key={idx} className="pl-1 leading-relaxed break-inside-avoid">
                                         {desc}
@@ -120,11 +139,14 @@ export default function ModernTemplate({
                 <div className="space-y-4">
                     {education.map((edu) => (
                         <div key={edu.id} className="break-inside-avoid">
-                            <div className="font-bold text-base">{edu.degree}</div>
-                            <div className="text-sm opacity-90">{edu.institution}</div>
-                            <div className="text-xs opacity-75 mt-1 font-medium bg-white/10 inline-block px-2 py-0.5 rounded">
-                                {edu.startDate} - {edu.endDate}
+                            {/* Smart Fit: Inline Date to save vertical space */}
+                            <div className="flex justify-between items-start">
+                                <div className="font-bold text-base leading-tight">{edu.degree}</div>
+                                <div className="text-[10px] font-bold opacity-75 bg-white/10 px-1.5 py-0.5 rounded whitespace-nowrap ml-2 mt-0.5">
+                                    {edu.startDate} - {edu.endDate}
+                                </div>
                             </div>
+                            <div className="text-sm opacity-90 mt-0.5">{edu.institution}</div>
                         </div>
                     ))}
                 </div>
@@ -175,21 +197,29 @@ export default function ModernTemplate({
                                 )}
                             </div>
                             <p className="text-slate-700 text-sm mb-2 leading-relaxed">{project.description}</p>
-                            <div className="flex flex-wrap gap-2">
-                                {project.technologies.map((tech, t) => (
-                                    <span
-                                        key={t}
-                                        className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border"
-                                        style={{
-                                            color: colorTheme.primary,
-                                            borderColor: colorTheme.secondary,
-                                            backgroundColor: `rgba(${primaryRgb}, 0.05)`
-                                        }}
-                                    >
-                                        {tech}
-                                    </span>
-                                ))}
-                            </div>
+
+                            {/* Smart Fit: In compact mode, show technologies as text line to save space */}
+                            {spacing === 'compact' ? (
+                                <div className="text-xs text-slate-500 font-medium">
+                                    <span className="opacity-75">Tech stack:</span> {project.technologies.join(', ')}
+                                </div>
+                            ) : (
+                                <div className="flex flex-wrap gap-2">
+                                    {project.technologies.map((tech, t) => (
+                                        <span
+                                            key={t}
+                                            className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border"
+                                            style={{
+                                                color: colorTheme.primary,
+                                                borderColor: colorTheme.secondary,
+                                                backgroundColor: `rgba(${primaryRgb}, 0.05)`
+                                            }}
+                                        >
+                                            {tech}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
@@ -198,37 +228,58 @@ export default function ModernTemplate({
         certifications: certifications.length > 0 && (
             <div className="mb-8">
                 <h2
-                    className="text-lg font-bold uppercase tracking-wider mb-4 border-b-2 pb-1 inline-block"
-                    style={{ color: colorTheme.primary, borderColor: colorTheme.secondary }}
+                    className={`text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2 opacity-90 ${spacing === 'compact' && sidebarSectionIds.includes('certifications') ? 'mb-2' : ''}`}
+                    style={sidebarSectionIds.includes('certifications') ? {} : { color: colorTheme.primary, borderColor: colorTheme.secondary }} // Use sidebar style if in sidebar
                 >
-                    Certifications
+                    {/* Icon switch if in sidebar vs main */}
+                    {sidebarSectionIds.includes('certifications') ? <Award size={16} /> : null}
+                    {sidebarSectionIds.includes('certifications') ? 'Certifications' : (
+                        <span className={`text-lg border-b-2 pb-1 inline-block`} style={{ color: colorTheme.primary, borderColor: colorTheme.secondary }}>Certifications</span>
+                    )}
                 </h2>
-                <div className="grid grid-cols-2 gap-4">
-                    {certifications.map((cert) => (
-                        <div key={cert.id} className="p-3 bg-slate-50 rounded border border-slate-100 break-inside-avoid">
-                            <div className="flex items-start gap-2">
-                                <Award size={16} className="mt-0.5 flex-shrink-0" style={{ color: colorTheme.primary }} />
-                                <div>
-                                    <div className="font-bold text-sm text-slate-800">{cert.name}</div>
-                                    <div className="text-xs text-slate-500 mt-0.5">{cert.issuer} • {cert.date}</div>
+
+                {/* Logic: If in Sidebar OR Compact mode, show as pills. Else show list. */}
+                {(sidebarSectionIds.includes('certifications') || spacing === 'compact') ? (
+                    <div className="flex flex-wrap gap-2">
+                        {certifications.map((cert) => (
+                            <div key={cert.id} className="break-inside-avoid max-w-full">
+                                <span
+                                    className="text-[11px] leading-tight font-medium px-2 py-1.5 rounded bg-white/10 border border-white/20 inline-flex items-center text-left"
+                                >
+                                    <span>{cert.name}</span>
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 gap-4">
+                        {certifications.map((cert) => (
+                            <div key={cert.id} className="p-3 bg-slate-50 rounded border border-slate-100 break-inside-avoid">
+                                <div className="flex items-start gap-2">
+                                    <Award size={16} className="mt-0.5 flex-shrink-0" style={{ color: colorTheme.primary }} />
+                                    <div>
+                                        <div className="font-bold text-sm text-slate-800">{cert.name}</div>
+                                        <div className="text-xs text-slate-500 mt-0.5">{cert.issuer} • {cert.date}</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
             </div>
         ),
         achievements: achievements.length > 0 && (
-            <div className="mb-8">
+            <div className={`${spacing === 'compact' ? 'mb-4' : 'mb-8'}`}>
                 <h2
-                    className="text-lg font-bold uppercase tracking-wider mb-4 border-b-2 pb-1 inline-block"
-                    style={{ color: colorTheme.primary, borderColor: colorTheme.secondary }}
+                    className={`font-bold uppercase tracking-wider ${sidebarSectionIds.includes('achievements') ? 'text-sm mb-3 flex items-center gap-2 opacity-90' : 'text-lg mb-4 border-b-2 pb-1 inline-block'}`}
+                    style={sidebarSectionIds.includes('achievements') ? {} : { color: colorTheme.primary, borderColor: colorTheme.secondary }}
                 >
+                    {sidebarSectionIds.includes('achievements') && <Star size={16} />}
                     Achievements
                 </h2>
-                <ul className="list-disc list-outside ml-4 space-y-2 text-slate-700 text-sm">
+                <ul className={`list-disc ${sidebarSectionIds.includes('achievements') ? 'list-inside space-y-1 opacity-95 text-sm' : 'list-outside ml-4 space-y-2 text-slate-700 text-sm'}`}>
                     {achievements.map((achievement, idx) => (
-                        <li key={idx} className="pl-1 leading-relaxed break-inside-avoid">
+                        <li key={idx} className={`pl-1 leading-relaxed break-inside-avoid ${sidebarSectionIds.includes('achievements') ? '' : ''}`}>
                             {achievement}
                         </li>
                     ))}
@@ -251,10 +302,6 @@ export default function ModernTemplate({
             </div>
         )
     };
-
-    // Define column assignments
-    const sidebarSectionIds = ['education', 'skills', 'languages'];
-    const mainSectionIds = ['summary', 'experience', 'projects', 'certifications', 'achievements'];
 
     // Default order if none provided
     const defaultOrder = ['summary', 'experience', 'education', 'skills', 'projects', 'certifications', 'achievements', 'languages'];
@@ -289,7 +336,7 @@ export default function ModernTemplate({
     );
 
     return (
-        <div className={`bg-white shadow-lg ${fontFamily} ${fontSize} w-full mx-auto flex`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white shadow-lg ${fontFamily} ${fontSize} mx-auto print:mx-0 flex`} style={{ width: '210mm', minHeight: '297mm' }}>
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}

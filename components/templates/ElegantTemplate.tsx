@@ -21,6 +21,7 @@ interface ElegantTemplateProps {
     colorTheme: ColorTheme;
     fontFamily: string;
     fontSize: string;
+    spacing?: 'compact' | 'standard';
     sectionOrder?: string[];
     onReorder?: (newOrder: string[]) => void;
 }
@@ -30,6 +31,7 @@ export default function ElegantTemplate({
     colorTheme,
     fontFamily,
     fontSize,
+    spacing = 'standard',
     sectionOrder = [],
     onReorder
 }: ElegantTemplateProps) {
@@ -154,7 +156,7 @@ export default function ElegantTemplate({
     const currentOrder = sectionOrder.length > 0 ? sectionOrder : defaultOrder;
 
     return (
-        <div className={`bg-white p-10 font-serif ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white p-10 font-serif ${fontSize} mx-auto print:mx-0`} style={{ width: '210mm', minHeight: '297mm' }}>
             {/* Header */}
             <div className="text-center mb-8 pb-6 border-b" style={{ borderColor: colorTheme.primary }}>
                 <h1 className="text-4xl font-light mb-3 tracking-wide" style={{ color: colorTheme.primary }}>

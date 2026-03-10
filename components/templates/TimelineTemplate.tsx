@@ -22,6 +22,7 @@ interface TimelineTemplateProps {
     colorTheme: ColorTheme;
     fontFamily: string;
     fontSize: string;
+    spacing?: 'compact' | 'standard';
     sectionOrder?: string[];
     onReorder?: (newOrder: string[]) => void;
 }
@@ -31,6 +32,7 @@ export default function TimelineTemplate({
     colorTheme,
     fontFamily,
     fontSize,
+    spacing = 'standard',
     sectionOrder = [],
     onReorder
 }: TimelineTemplateProps) {
@@ -269,7 +271,7 @@ export default function TimelineTemplate({
     );
 
     return (
-        <div className={`bg-white ${fontFamily} ${fontSize} w-full mx-auto flex flex-col`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white ${fontFamily} ${fontSize} mx-auto print:mx-0 flex flex-col`} style={{ width: '210mm', minHeight: '297mm' }}>
 
             {/* Header Section with Gradient Accent */}
             <div className="relative p-8 pb-10 overflow-hidden">

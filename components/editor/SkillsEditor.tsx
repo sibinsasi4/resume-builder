@@ -94,7 +94,7 @@ function SortableSkillCategory({
                     type="text"
                     value={skillCat.category}
                     onChange={(e) => updateCategory(index, 'category', e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg text-sm mt-1"
+                    className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white mt-1"
                     placeholder="e.g., Programming Languages, Tools"
                 />
             </div>

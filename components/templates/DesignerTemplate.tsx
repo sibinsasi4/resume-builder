@@ -21,6 +21,7 @@ interface DesignerTemplateProps {
     colorTheme: ColorTheme;
     fontFamily: string;
     fontSize: string;
+    spacing?: 'compact' | 'standard';
     sectionOrder?: string[];
     onReorder?: (newOrder: string[]) => void;
 }
@@ -30,6 +31,7 @@ export default function DesignerTemplate({
     colorTheme,
     fontFamily,
     fontSize,
+    spacing = 'standard',
     sectionOrder = [],
     onReorder
 }: DesignerTemplateProps) {
@@ -181,7 +183,7 @@ export default function DesignerTemplate({
     );
 
     return (
-        <div className={`bg-white ${fontFamily} ${fontSize} w-full mx-auto flex`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white ${fontFamily} ${fontSize} mx-auto print:mx-0 flex`} style={{ width: '210mm', minHeight: '297mm' }}>
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={currentOrder} strategy={verticalListSortingStrategy}>
                     {/* Left Column - Narrow */}

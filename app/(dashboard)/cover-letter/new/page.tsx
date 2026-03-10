@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Sparkles, Loader2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import DashboardNavbar from '@/components/dashboard/DashboardNavbar';
+
 import PricingModal from '@/components/subscription/PricingModal';
 import { usePayment } from '@/hooks/usePayment';
 
@@ -83,7 +83,7 @@ export default function NewCoverLetterPage() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <DashboardNavbar />
+
             <div className="container mx-auto px-4 py-8">
                 <Button variant="ghost" onClick={() => router.back()} className="mb-6">
                     <ArrowLeft className="w-4 h-4 mr-2" />

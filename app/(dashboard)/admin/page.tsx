@@ -71,53 +71,62 @@ export default function AdminDashboard() {
     const [stats, setStats] = useState<Stats | null>(null);
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
+    const [newAnnouncement, setNewAnnouncement] = useState({
+        message: '',
+        type: 'info',
+        duration: '24'
+    });
+    const [announcements, setAnnouncements] = useState<any[]>([]);
+
+    const createAnnouncement = async () => {
+        if (!newAnnouncement.message) return;
+
+        try {
+            // Optimistic update
+            const ann = {
+                id: Date.now().toString(),
+                ...newAnnouncement,
+                createdAt: new Date().toISOString(),
+                active: true
+            };
+            setAnnouncements([ann, ...announcements]);
+            setNewAnnouncement({ message: '', type: 'info', duration: '24' });
+
+            // In a real app, you'd POST to /api/admin/announcements here
+        } catch (error) {
+            console.error('Failed to create announcement:', error);
+        }
+    };
+
+    const deleteAnnouncement = (id: string) => {
+        setAnnouncements(announcements.filter(a => a.id !== id));
+    };
 
     useEffect(() => {
-        console.log('Admin page - Session:', session);
-        console.log('Admin page - Status:', status);
-        console.log('Admin page - User role:', session?.user?.role);
-
         if (status === 'unauthenticated') {
-            console.log('Redirecting to login - unauthenticated');
             router.push('/login');
             return;
         }
 
         if (session?.user?.role !== 'admin') {
-            console.log('Redirecting to dashboard - not admin. Role:', session?.user?.role);
             router.push('/dashboard');
             return;
         }
 
-        console.log('User is admin, fetching data...');
         fetchData();
     }, [session, status, router]);
 
     const fetchData = async () => {
         try {
-            console.log('Fetching admin data...');
             const [statsRes, usersRes] = await Promise.all([
                 fetch('/api/admin/stats'),
                 fetch('/api/admin/users')
             ]);
 
-            console.log('Stats response status:', statsRes.status);
-            console.log('Users response status:', usersRes.status);
-
-            if (statsRes.ok) {
-                const statsData = await statsRes.json();
-                console.log('Stats data received:', statsData);
-                setStats(statsData);
-            } else {
-                console.error('Stats fetch failed:', await statsRes.text());
-            }
-
+            if (statsRes.ok) setStats(await statsRes.json());
             if (usersRes.ok) {
-                const usersData = await usersRes.json();
-                console.log('Users data received:', usersData);
-                setUsers(usersData.users);
-            } else {
-                console.error('Users fetch failed:', await usersRes.text());
+                const data = await usersRes.json();
+                setUsers(data.users);
             }
         } catch (error) {
             console.error('Failed to fetch admin data:', error);
@@ -162,9 +171,19 @@ export default function AdminDashboard() {
                                 <p className="text-xs text-gray-400">Administrator Dashboard</p>
                             </div>
                         </div>
-                        <Link href="/dashboard" className="text-sm text-gray-400 hover:text-white transition-colors">
-                            Back to Dashboard
-                        </Link>
+                        <div className="flex gap-4 items-center">
+                            <Link href="/admin/announcements" className="text-sm text-orange-400 hover:text-orange-300 transition-colors flex items-center gap-1 font-medium">
+                                <div className="w-2 h-2 rounded-full bg-orange-500" />
+                                Announcements
+                            </Link>
+                            <Link href="/admin/coupons" className="text-sm text-green-400 hover:text-green-300 transition-colors flex items-center gap-1 font-medium">
+                                <div className="w-2 h-2 rounded-full bg-green-500" />
+                                Manage Coupons
+                            </Link>
+                            <Link href="/dashboard" className="text-sm text-gray-400 hover:text-white transition-colors">
+                                Back to Dashboard
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -175,26 +194,26 @@ export default function AdminDashboard() {
                     {/* MRR */}
                     <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 backdrop-blur-xl rounded-2xl p-6 border border-blue-500/30">
                         <div className="text-sm text-blue-300 mb-2">Monthly Recurring Revenue</div>
-                        <div className="text-3xl font-bold mb-1">₹{stats?.financialMetrics.mrr.toLocaleString() || 0}</div>
-                        <GrowthIndicator value={stats?.financialMetrics.revenueGrowthRate || 0} />
+                        <div className="text-3xl font-bold mb-1">₹{stats?.financialMetrics?.mrr?.toLocaleString() || 0}</div>
+                        <GrowthIndicator value={stats?.financialMetrics?.revenueGrowthRate || 0} />
                     </div>
 
                     {/* ARR */}
                     <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/30">
                         <div className="text-sm text-purple-300 mb-2">Annual Recurring Revenue</div>
-                        <div className="text-3xl font-bold">₹{stats?.financialMetrics.arr.toLocaleString() || 0}</div>
+                        <div className="text-3xl font-bold">₹{stats?.financialMetrics?.arr?.toLocaleString() || 0}</div>
                     </div>
 
                     {/* ARPU */}
                     <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 backdrop-blur-xl rounded-2xl p-6 border border-green-500/30">
                         <div className="text-sm text-green-300 mb-2">Avg Revenue Per User</div>
-                        <div className="text-3xl font-bold">₹{stats?.financialMetrics.arpu.toFixed(0) || 0}</div>
+                        <div className="text-3xl font-bold">₹{stats?.financialMetrics?.arpu?.toFixed(0) || 0}</div>
                     </div>
 
                     {/* Churn Rate */}
                     <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 backdrop-blur-xl rounded-2xl p-6 border border-orange-500/30">
                         <div className="text-sm text-orange-300 mb-2">Churn Rate</div>
-                        <div className="text-3xl font-bold">{stats?.subscriptionStats.churnRate.toFixed(1) || 0}%</div>
+                        <div className="text-3xl font-bold">{stats?.subscriptionStats?.churnRate?.toFixed(1) || 0}%</div>
                         <div className="text-xs text-gray-400 mt-2">This month</div>
                     </div>
                 </div>
@@ -207,7 +226,7 @@ export default function AdminDashboard() {
                             <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
                                 <Users className="w-6 h-6" />
                             </div>
-                            <GrowthIndicator value={stats?.growthMetrics.userGrowthRate || 0} />
+                            <GrowthIndicator value={stats?.growthMetrics?.userGrowthRate || 0} />
                         </div>
                         <div className="text-3xl font-bold mb-1">{stats?.totalUsers || 0}</div>
                         <div className="text-sm text-gray-400">Total Users</div>
@@ -338,34 +357,34 @@ export default function AdminDashboard() {
                                     <CheckCircle className="w-4 h-4 text-green-400" />
                                     <span className="text-sm">Successful</span>
                                 </div>
-                                <span className="font-bold">{stats?.paymentStats.successful || 0}</span>
+                                <span className="font-bold">{stats?.paymentStats?.successful || 0}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <XCircle className="w-4 h-4 text-red-400" />
                                     <span className="text-sm">Failed</span>
                                 </div>
-                                <span className="font-bold">{stats?.paymentStats.failed || 0}</span>
+                                <span className="font-bold">{stats?.paymentStats?.failed || 0}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <Clock className="w-4 h-4 text-yellow-400" />
                                     <span className="text-sm">Pending</span>
                                 </div>
-                                <span className="font-bold">{stats?.paymentStats.pending || 0}</span>
+                                <span className="font-bold">{stats?.paymentStats?.pending || 0}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <AlertCircle className="w-4 h-4 text-orange-400" />
                                     <span className="text-sm">Refunded</span>
                                 </div>
-                                <span className="font-bold">{stats?.paymentStats.refunded || 0}</span>
+                                <span className="font-bold">{stats?.paymentStats?.refunded || 0}</span>
                             </div>
                             <div className="pt-4 border-t border-white/10">
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm font-semibold">Success Rate</span>
                                     <span className="text-2xl font-bold text-green-400">
-                                        {stats?.paymentStats.successRate.toFixed(1) || 0}%
+                                        {stats?.paymentStats?.successRate?.toFixed(1) || 0}%
                                     </span>
                                 </div>
                             </div>
@@ -381,15 +400,15 @@ export default function AdminDashboard() {
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <span className="text-sm">Today</span>
-                                <span className="text-2xl font-bold">{stats?.loginStats.today || 0}</span>
+                                <span className="text-2xl font-bold">{stats?.loginStats?.today || 0}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm">This Week</span>
-                                <span className="text-2xl font-bold">{stats?.loginStats.thisWeek || 0}</span>
+                                <span className="text-2xl font-bold">{stats?.loginStats?.thisWeek || 0}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm">This Month</span>
-                                <span className="text-2xl font-bold">{stats?.loginStats.thisMonth || 0}</span>
+                                <span className="text-2xl font-bold">{stats?.loginStats?.thisMonth || 0}</span>
                             </div>
                         </div>
                     </div>
@@ -407,19 +426,19 @@ export default function AdminDashboard() {
                             <div className="flex items-center justify-between">
                                 <span className="text-sm">New This Month</span>
                                 <span className="text-2xl font-bold text-green-400">
-                                    +{stats?.subscriptionStats.newThisMonth || 0}
+                                    +{stats?.subscriptionStats?.newThisMonth || 0}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm">Cancelled This Month</span>
                                 <span className="text-2xl font-bold text-red-400">
-                                    -{stats?.subscriptionStats.cancelledThisMonth || 0}
+                                    -{stats?.subscriptionStats?.cancelledThisMonth || 0}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm">Upcoming Renewals (30d)</span>
                                 <span className="text-2xl font-bold text-blue-400">
-                                    {stats?.subscriptionStats.upcomingRenewals || 0}
+                                    {stats?.subscriptionStats?.upcomingRenewals || 0}
                                 </span>
                             </div>
                         </div>
@@ -435,15 +454,15 @@ export default function AdminDashboard() {
                             <div className="flex items-center justify-between">
                                 <span className="text-sm">New Users This Month</span>
                                 <span className="text-2xl font-bold text-green-400">
-                                    +{stats?.growthMetrics.newUsersThisMonth || 0}
+                                    +{stats?.growthMetrics?.newUsersThisMonth || 0}
                                 </span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="text-sm">Growth Rate</span>
                                 <div className="flex items-center gap-2">
-                                    <GrowthIndicator value={stats?.growthMetrics.userGrowthRate || 0} />
+                                    <GrowthIndicator value={stats?.growthMetrics?.userGrowthRate || 0} />
                                     <span className="text-xl font-bold">
-                                        {Math.abs(stats?.growthMetrics.userGrowthRate || 0).toFixed(1)}%
+                                        {Math.abs(stats?.growthMetrics?.userGrowthRate || 0).toFixed(1)}%
                                     </span>
                                 </div>
                             </div>
@@ -491,6 +510,82 @@ export default function AdminDashboard() {
                         ) : (
                             <p className="text-gray-400 text-sm">No downloads tracked yet</p>
                         )}
+                    </div>
+                </div>
+
+                {/* Announcement Management */}
+                <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 overflow-hidden mb-8">
+                    <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                        <div>
+                            <h2 className="text-2xl font-bold">Global Announcements</h2>
+                            <p className="text-sm text-gray-400 mt-1">Broadcast messages to all users</p>
+                        </div>
+                    </div>
+                    <div className="p-6">
+                        <div className="flex gap-4 mb-6">
+                            <input
+                                type="text"
+                                placeholder="Enter announcement message..."
+                                className="flex-1 bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value={newAnnouncement.message}
+                                onChange={(e) => setNewAnnouncement({ ...newAnnouncement, message: e.target.value })}
+                            />
+                            <select
+                                className="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value={newAnnouncement.type}
+                                onChange={(e) => setNewAnnouncement({ ...newAnnouncement, type: e.target.value })}
+                            >
+                                <option value="info" className="text-black">Info ℹ️</option>
+                                <option value="warning" className="text-black">Warning ⚠️</option>
+                                <option value="success" className="text-black">Success ✅</option>
+                                <option value="error" className="text-black">Error 🚨</option>
+                            </select>
+                            <select
+                                className="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value={newAnnouncement.duration}
+                                onChange={(e) => setNewAnnouncement({ ...newAnnouncement, duration: e.target.value })}
+                            >
+                                <option value="24" className="text-black">24 Hours</option>
+                                <option value="48" className="text-black">48 Hours</option>
+                                <option value="168" className="text-black">1 Week</option>
+                            </select>
+                            <button
+                                onClick={createAnnouncement}
+                                disabled={!newAnnouncement.message}
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Post
+                            </button>
+                        </div>
+
+                        <div className="space-y-3">
+                            {announcements.map((ann) => (
+                                <div key={ann.id} className="flex items-center justify-between bg-white/5 rounded-lg p-4 border border-white/10">
+                                    <div className="flex items-center gap-4">
+                                        <span className={`px-2 py-1 rounded text-xs font-bold uppercase ${ann.type === 'warning' ? 'bg-yellow-500/20 text-yellow-400' :
+                                            ann.type === 'success' ? 'bg-green-500/20 text-green-400' :
+                                                ann.type === 'error' ? 'bg-red-500/20 text-red-400' :
+                                                    'bg-blue-500/20 text-blue-400'
+                                            }`}>
+                                            {ann.type}
+                                        </span>
+                                        <span className="font-medium">{ann.message}</span>
+                                        <span className="text-xs text-gray-500">
+                                            Expires: {new Date(ann.expiresAt).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                    <button
+                                        onClick={() => deleteAnnouncement(ann.id)}
+                                        className="text-red-400 hover:text-red-300 transition-colors"
+                                    >
+                                        <XCircle className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            ))}
+                            {announcements.length === 0 && (
+                                <p className="text-center text-gray-400 py-4">No active announcements</p>
+                            )}
+                        </div>
                     </div>
                 </div>
 

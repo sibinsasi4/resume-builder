@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { Sparkles } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import TemplateRenderer from '@/components/templates/TemplateRenderer';
 import ExperienceEditor from '@/components/editor/ExperienceEditor';
@@ -224,10 +225,10 @@ export default function EditorPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen bg-slate-950 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Loading editor...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto"></div>
+                    <p className="mt-4 text-slate-400">Loading editor...</p>
                 </div>
             </div>
         );
@@ -249,9 +250,9 @@ export default function EditorPage() {
     const resumeData: ResumeData = resume.data;
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-slate-950 text-slate-200">
             {/* Top Bar */}
-            <div className="bg-white shadow-sm border-b sticky top-0 z-10">
+            <div className="bg-slate-900/80 backdrop-blur-md border-b border-white/10 sticky top-0 z-10">
                 <div className="container mx-auto px-4 py-3">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-4">
@@ -259,6 +260,7 @@ export default function EditorPage() {
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => router.push('/dashboard')}
+                                className="text-slate-400 hover:text-white hover:bg-white/5"
                             >
                                 ← Back
                             </Button>
@@ -266,11 +268,12 @@ export default function EditorPage() {
                                 type="text"
                                 value={resume.title}
                                 onChange={(e) => setResume({ ...resume, title: e.target.value })}
-                                className="text-xl font-semibold border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2"
+                                className="text-xl font-semibold border-none focus:outline-none focus:ring-2 focus:ring-amber-500/50 rounded px-2 bg-transparent text-white placeholder:text-slate-500"
+                                placeholder="Untitled Resume"
                             />
                         </div>
                         <div className="flex gap-2">
-                            <Button variant="outline" size="sm" onClick={saveResume} disabled={saving}>
+                            <Button variant="outline" size="sm" onClick={saveResume} disabled={saving} className="border-white/10 text-slate-300 hover:bg-white/5 hover:text-white">
                                 {saving ? 'Saving...' : '💾 Save'}
                             </Button>
                             <Button
@@ -318,16 +321,16 @@ export default function EditorPage() {
                         <QualityScore data={resumeData} />
 
                         {/* Template Selector */}
-                        <div className="bg-white rounded-lg shadow p-4">
-                            <h3 className="font-semibold mb-3">Template</h3>
+                        <div className="bg-slate-900/50 border border-white/10 rounded-lg shadow-xl p-4">
+                            <h3 className="font-semibold mb-3 text-white">Template</h3>
                             <div className="grid grid-cols-3 gap-2">
                                 {templateConfigs.map((template) => (
                                     <button
                                         key={template.id}
                                         onClick={() => setResume({ ...resume, templateType: template.id })}
                                         className={`p-3 border-2 rounded-lg text-sm font-medium transition-all ${resume.templateType === template.id
-                                            ? 'border-blue-600 bg-blue-50'
-                                            : 'border-gray-200 hover:border-blue-300'
+                                            ? 'border-amber-500 bg-amber-500/10 text-amber-400'
+                                            : 'border-white/10 hover:border-amber-500/50 text-slate-400 hover:text-white'
                                             }`}
                                     >
                                         {template.name}
@@ -337,8 +340,8 @@ export default function EditorPage() {
                         </div>
 
                         {/* Color Theme Selector */}
-                        <div className="bg-white rounded-lg shadow p-4">
-                            <h3 className="font-semibold mb-3">Color Theme</h3>
+                        <div className="bg-slate-900/50 border border-white/10 rounded-lg shadow-xl p-4">
+                            <h3 className="font-semibold mb-3 text-white">Color Theme</h3>
                             <div className="grid grid-cols-4 gap-2">
                                 {colorThemes.map((theme) => (
                                     <button
@@ -356,16 +359,16 @@ export default function EditorPage() {
                         </div>
 
                         {/* Font Selector */}
-                        <div className="bg-white rounded-lg shadow p-4">
-                            <h3 className="font-semibold mb-3">Font Style</h3>
+                        <div className="bg-slate-900/50 border border-white/10 rounded-lg shadow-xl p-4">
+                            <h3 className="font-semibold mb-3 text-white">Font Style</h3>
                             <div className="grid grid-cols-3 gap-2">
                                 {['sans', 'serif', 'mono'].map((font) => (
                                     <button
                                         key={font}
                                         onClick={() => setResume({ ...resume, fontFamily: font })}
                                         className={`p-2 border-2 rounded-lg text-sm font-medium transition-all ${resume.fontFamily === font
-                                            ? 'border-blue-600 bg-blue-50'
-                                            : 'border-gray-200 hover:border-blue-300'
+                                            ? 'border-amber-500 bg-amber-500/10 text-amber-400'
+                                            : 'border-white/10 hover:border-amber-500/50 text-slate-400 hover:text-white'
                                             }`}
                                     >
                                         {font === 'sans' ? 'Sans Serif' : font === 'serif' ? 'Serif' : 'Monospace'}
@@ -375,16 +378,16 @@ export default function EditorPage() {
                         </div>
 
                         {/* Font Size Selector */}
-                        <div className="bg-white rounded-lg shadow p-4">
-                            <h3 className="font-semibold mb-3">Text Size</h3>
+                        <div className="bg-slate-900/50 border border-white/10 rounded-lg shadow-xl p-4">
+                            <h3 className="font-semibold mb-3 text-white">Text Size</h3>
                             <div className="grid grid-cols-3 gap-2">
                                 {['small', 'medium', 'large'].map((size) => (
                                     <button
                                         key={size}
                                         onClick={() => setResume({ ...resume, fontSize: size })}
                                         className={`p-2 border-2 rounded-lg text-sm font-medium transition-all ${(resume.fontSize || 'medium') === size
-                                            ? 'border-blue-600 bg-blue-50'
-                                            : 'border-gray-200 hover:border-blue-300'
+                                            ? 'border-amber-500 bg-amber-500/10 text-amber-400'
+                                            : 'border-white/10 hover:border-amber-500/50 text-slate-400 hover:text-white'
                                             }`}
                                     >
                                         {size.charAt(0).toUpperCase() + size.slice(1)}
@@ -394,13 +397,11 @@ export default function EditorPage() {
                         </div>
 
                         {/* Section Editor */}
-                        <div className="bg-white rounded-lg shadow p-4">
-                            <h3 className="font-semibold mb-3">Edit Sections</h3>
+                        <div className="bg-slate-900/50 border border-white/10 rounded-lg shadow-xl p-4">
+                            <h3 className="font-semibold mb-3 text-white">Edit Sections</h3>
                             <div className="space-y-2">
                                 <Button
-                                    variant={activeTab === 'personal' ? 'primary' : 'ghost'}
-                                    size="sm"
-                                    className="w-full justify-start"
+                                    className={`w-full justify-start ${activeTab === 'personal' ? 'bg-amber-500/10 text-amber-400 hover:bg-amber-500/20' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
                                     onClick={() => setActiveTab('personal')}
                                 >
                                     Personal Info
@@ -465,13 +466,14 @@ export default function EditorPage() {
                         </div>
 
                         {/* Section Editors */}
-                        <div className="bg-white rounded-lg shadow p-4">
+                        {/* Section Editors */}
+                        <div className="bg-slate-900/50 border border-white/10 rounded-lg shadow-xl p-4">
                             {activeTab === 'personal' && (
                                 <div className="space-y-3">
-                                    <h3 className="font-semibold text-lg">Personal Information</h3>
+                                    <h3 className="font-semibold text-lg text-white">Personal Information</h3>
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
-                                            <label className="text-xs font-medium text-gray-600">Full Name</label>
+                                            <label className="text-xs font-medium text-slate-400">Full Name</label>
                                             <input
                                                 type="text"
                                                 value={resumeData.personalInfo?.fullName || ''}
@@ -482,11 +484,11 @@ export default function EditorPage() {
                                                         personalInfo: { ...resumeData.personalInfo, fullName: e.target.value }
                                                     }
                                                 })}
-                                                className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm text-white bg-slate-950 focus:border-amber-500 focus:outline-none placeholder:text-slate-600"
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-medium text-gray-600">Email</label>
+                                            <label className="text-xs font-medium text-slate-400">Email</label>
                                             <input
                                                 type="email"
                                                 value={resumeData.personalInfo?.email || ''}
@@ -497,11 +499,11 @@ export default function EditorPage() {
                                                         personalInfo: { ...resumeData.personalInfo, email: e.target.value }
                                                     }
                                                 })}
-                                                className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm text-white bg-slate-950 focus:border-amber-500 focus:outline-none placeholder:text-slate-600"
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-medium text-gray-600">Phone</label>
+                                            <label className="text-xs font-medium text-slate-400">Phone</label>
                                             <input
                                                 type="tel"
                                                 value={resumeData.personalInfo?.phone || ''}
@@ -512,11 +514,11 @@ export default function EditorPage() {
                                                         personalInfo: { ...resumeData.personalInfo, phone: e.target.value }
                                                     }
                                                 })}
-                                                className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm text-white bg-slate-950 focus:border-amber-500 focus:outline-none placeholder:text-slate-600"
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-medium text-gray-600">Location</label>
+                                            <label className="text-xs font-medium text-slate-400">Location</label>
                                             <input
                                                 type="text"
                                                 value={resumeData.personalInfo?.location || ''}
@@ -527,11 +529,11 @@ export default function EditorPage() {
                                                         personalInfo: { ...resumeData.personalInfo, location: e.target.value }
                                                     }
                                                 })}
-                                                className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm text-white bg-slate-950 focus:border-amber-500 focus:outline-none placeholder:text-slate-600"
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-medium text-gray-600">LinkedIn</label>
+                                            <label className="text-xs font-medium text-slate-400">LinkedIn</label>
                                             <input
                                                 type="text"
                                                 value={resumeData.personalInfo?.linkedin || ''}
@@ -542,12 +544,12 @@ export default function EditorPage() {
                                                         personalInfo: { ...resumeData.personalInfo, linkedin: e.target.value }
                                                     }
                                                 })}
-                                                className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm text-white bg-slate-950 focus:border-amber-500 focus:outline-none placeholder:text-slate-600"
                                                 placeholder="linkedin.com/in/username"
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-medium text-gray-600">GitHub</label>
+                                            <label className="text-xs font-medium text-slate-400">GitHub</label>
                                             <input
                                                 type="text"
                                                 value={resumeData.personalInfo?.github || ''}
@@ -558,12 +560,12 @@ export default function EditorPage() {
                                                         personalInfo: { ...resumeData.personalInfo, github: e.target.value }
                                                     }
                                                 })}
-                                                className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm text-white bg-slate-950 focus:border-amber-500 focus:outline-none placeholder:text-slate-600"
                                                 placeholder="github.com/username"
                                             />
                                         </div>
                                         <div>
-                                            <label className="text-xs font-medium text-gray-600">Website</label>
+                                            <label className="text-xs font-medium text-slate-400">Website</label>
                                             <input
                                                 type="text"
                                                 value={resumeData.personalInfo?.website || ''}
@@ -574,7 +576,7 @@ export default function EditorPage() {
                                                         personalInfo: { ...resumeData.personalInfo, website: e.target.value }
                                                     }
                                                 })}
-                                                className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm text-white bg-slate-950 focus:border-amber-500 focus:outline-none placeholder:text-slate-600"
                                                 placeholder="yourportfolio.com"
                                             />
                                         </div>
@@ -584,14 +586,14 @@ export default function EditorPage() {
 
                             {activeTab === 'summary' && (
                                 <div className="space-y-3">
-                                    <h3 className="font-semibold text-lg">Professional Summary</h3>
+                                    <h3 className="font-semibold text-lg text-white">Professional Summary</h3>
                                     <textarea
                                         value={resumeData.summary || ''}
                                         onChange={(e) => setResume({
                                             ...resume,
                                             data: { ...resumeData, summary: e.target.value }
                                         })}
-                                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                                        className="w-full px-3 py-2 border border-white/10 rounded-lg text-sm text-white bg-slate-950 focus:border-amber-500 focus:outline-none placeholder:text-slate-600"
                                         rows={6}
                                         placeholder="Write a brief summary of your professional background and key achievements..."
                                     />
@@ -644,12 +646,38 @@ export default function EditorPage() {
 
                     {/* Right Panel - Live Preview */}
                     <div className="lg:sticky lg:top-24 h-fit">
-                        <div className="bg-white rounded-lg shadow-lg p-4">
-                            <h3 className="font-semibold mb-4">Live Preview</h3>
+                        <div className="bg-slate-900/50 border border-white/10 rounded-lg shadow-xl p-4">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="font-semibold text-white">Live Preview</h3>
+                                <button
+                                    onClick={() => {
+                                        setResume((prev: any) => {
+                                            const newIsFit = !prev.isFitToPage;
+
+                                            return {
+                                                ...prev,
+                                                isFitToPage: newIsFit,
+                                                // When enabling Smart Fit, force Small font. When disabling, revert to Medium (default).
+                                                fontSize: newIsFit ? 'small' : (prev.fontSize === 'small' ? 'medium' : prev.fontSize)
+                                            };
+                                        });
+                                    }}
+                                    className={`flex items-center gap-2 text-xs px-3 py-1.5 rounded-full border transition-all ${resume.isFitToPage
+                                        ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold border-transparent shadow-lg shadow-amber-500/20'
+                                        : 'bg-white/5 text-slate-400 border-white/10 hover:text-white hover:border-amber-500/50'
+                                        }`}
+                                >
+                                    <Sparkles className={`w-3 h-3 ${resume.isFitToPage ? 'animate-pulse' : ''}`} />
+                                    {resume.isFitToPage ? 'Smart Fit Active' : '✨ Smart Fit 1-Page'}
+                                </button>
+                            </div>
                             <div
                                 id="resume-preview"
-                                className="border rounded-lg overflow-hidden"
-                                style={{ transform: 'scale(0.7)', transformOrigin: 'top left', width: '142.857%' }}
+                                className="bg-slate-200/50 border rounded-lg overflow-hidden shadow-2xl transition-all duration-500 ease-out origin-top-left"
+                                style={{
+                                    transform: 'scale(0.65)', // Fixed scale for UI viewing only
+                                    width: '153.8%' // Inverse of 0.65
+                                }}
                             >
                                 <TemplateRenderer
                                     templateType={resume.templateType as TemplateType}
@@ -657,6 +685,7 @@ export default function EditorPage() {
                                     colorThemeId={resume.colorTheme}
                                     fontFamily={resume.fontFamily}
                                     fontSize={resume.fontSize || 'medium'}
+                                    spacing={resume.isFitToPage ? 'compact' : 'standard'}
                                     sectionOrder={resumeData.sectionOrder || []}
                                     onReorder={(newOrder) => setResume({
                                         ...resume,
@@ -674,7 +703,7 @@ export default function EditorPage() {
                 isOpen={showPricingModal}
                 onClose={() => setShowPricingModal(false)}
                 onSelectPlan={async (plan: string, gateway: 'razorpay', couponCode?: string) => {
-                    // Handle payment selection (same as dashboard)
+                    // ... payment logic remains same ...
                     try {
                         const response = await fetch('/api/payments/razorpay/create-order', {
                             method: 'POST',

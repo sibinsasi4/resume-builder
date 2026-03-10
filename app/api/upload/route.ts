@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
         console.log(resumeText.substring(0, 500) + '...'); // Log first 500 chars
         console.log('-----------------------');
 
-        const structuredData = parseResumeStructure(resumeText);
+        const structuredData = await parseResumeStructure(resumeText);
 
         console.log('--- Structured Data ---');
         console.log(JSON.stringify(structuredData, null, 2));

@@ -21,6 +21,7 @@ interface ClassicTemplateProps {
     colorTheme: ColorTheme;
     fontFamily: string;
     fontSize: string;
+    spacing?: 'compact' | 'standard';
     sectionOrder?: string[];
     onReorder?: (newOrder: string[]) => void;
 }
@@ -30,6 +31,7 @@ export default function ClassicTemplate({
     colorTheme,
     fontFamily,
     fontSize,
+    spacing = 'standard',
     sectionOrder = [],
     onReorder
 }: ClassicTemplateProps) {
@@ -169,7 +171,7 @@ export default function ClassicTemplate({
     const currentOrder = sectionOrder.length > 0 ? sectionOrder : defaultOrder;
 
     return (
-        <div className={`bg-white p-8 shadow-lg ${fontFamily} ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white p-8 shadow-lg ${fontFamily} ${fontSize} mx-auto print:mx-0`} style={{ width: '210mm', minHeight: '297mm' }}>
             {/* Header (Fixed) */}
             <div className="border-b-4 pb-4 mb-6" style={{ borderColor: colorTheme.primary }}>
                 <h1 className="text-4xl font-bold mb-2" style={{ color: colorTheme.primary }}>

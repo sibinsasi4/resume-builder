@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Mic, Play, CheckCircle, Loader2, MessageSquare } from 'lucide-react';
+import { Mic, Play, CheckCircle, Loader2, MessageSquare, Info } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import DashboardNavbar from '@/components/dashboard/DashboardNavbar';
+// import DashboardNavbar from '@/components/dashboard/DashboardNavbar';
+
 import PricingModal from '@/components/subscription/PricingModal';
 import { usePayment } from '@/hooks/usePayment';
 import { useEffect } from 'react';
@@ -151,35 +152,50 @@ export default function InterviewPrepPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <DashboardNavbar />
-            <div className="container mx-auto px-4 py-8">
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Mock Interview Prep</h1>
-                    <p className="text-gray-500">Practice with AI-generated questions tailored to your target role.</p>
+        <div className="container mx-auto px-4 py-8 relative z-10">
+
+            {/* Ambient Background Effects */}
+            <div className="fixed inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl mix-blend-screen animate-pulse" />
+                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl mix-blend-screen animate-pulse delay-1000" />
+            </div>
+
+            <div className="container mx-auto px-4 py-8 relative z-10">
+                <div className="text-center mb-12">
+                    <div className="inline-flex items-center justify-center p-3 mb-6 bg-white/10 backdrop-blur-xl rounded-2xl ring-1 ring-white/20 shadow-2xl">
+                        <div className="bg-gradient-to-br from-blue-500 to-purple-600 w-12 h-12 rounded-xl flex items-center justify-center shadow-lg">
+                            <Mic className="w-6 h-6 text-white" />
+                        </div>
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-200 via-white to-purple-200 mb-4 tracking-tight">
+                        Mock Interview Prep
+                    </h1>
+                    <p className="text-lg text-blue-200/80 max-w-2xl mx-auto font-light leading-relaxed">
+                        Master your interview skills with AI-powered questions tailored specifically to your target role.
+                    </p>
                 </div>
 
                 {!isSessionActive ? (
-                    <Card className="max-w-md mx-auto p-8">
+                    <Card className="max-w-xl mx-auto p-8 bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl">
                         <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-blue-200 mb-2">
                                 Target Job Title
                             </label>
                             <input
                                 type="text"
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="e.g. Product Manager"
+                                className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-white/10"
+                                placeholder="e.g. Senior Product Manager"
                                 value={jobTitle}
                                 onChange={(e) => setJobTitle(e.target.value)}
                             />
                         </div>
-                        <div className="mb-6">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Job Description (Optional but Recommended)
+                        <div className="mb-8">
+                            <label className="block text-sm font-medium text-blue-200 mb-2">
+                                Job Description (Optional)
                             </label>
                             <textarea
-                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                placeholder="Paste the job description here for tailored questions..."
+                                className="w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:bg-white/10"
+                                placeholder="Paste the job description or key requirements here..."
                                 rows={4}
                                 value={jobDescription}
                                 onChange={(e) => setJobDescription(e.target.value)}
@@ -188,7 +204,7 @@ export default function InterviewPrepPage() {
                         <Button
                             onClick={handleStart}
                             disabled={!jobTitle || loading}
-                            className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-3 rounded-xl"
+                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:-translate-y-0.5"
                         >
                             {loading ? (
                                 <>
@@ -198,53 +214,56 @@ export default function InterviewPrepPage() {
                             ) : (
                                 <>
                                     <Play className="w-5 h-5 mr-2" />
-                                    Start Interview
+                                    Start Interview Session
                                 </>
                             )}
                         </Button>
                     </Card>
                 ) : (
-                    <div className="max-w-2xl mx-auto">
-                        <div className="mb-4 flex justify-between items-center text-sm text-gray-500">
-                            <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
-                            <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full">In Progress</span>
+                    <div className="max-w-3xl mx-auto">
+                        <div className="mb-6 flex justify-between items-center text-sm">
+                            <span className="text-gray-400">Question {currentQuestionIndex + 1} of {questions.length}</span>
+                            <span className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full border border-blue-500/30 flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                                In Progress
+                            </span>
                         </div>
 
-                        <Card className="p-8 mb-6">
-                            <div className="flex justify-between items-start mb-6">
-                                <h2 className="text-xl font-semibold text-gray-900 flex-1">
+                        <Card className="p-8 mb-6 bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl">
+                            <div className="flex justify-between items-start mb-8">
+                                <h2 className="text-2xl font-semibold text-white flex-1 leading-relaxed">
                                     {questions[currentQuestionIndex]}
                                 </h2>
                                 <Button
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => speakQuestion(questions[currentQuestionIndex])}
-                                    className={isSpeaking ? 'text-blue-600 animate-pulse' : 'text-gray-400'}
+                                    className={isSpeaking ? 'text-blue-400 animate-pulse' : 'text-gray-400 hover:text-white'}
                                 >
-                                    <Mic className="w-5 h-5" />
+                                    <Mic className="w-6 h-6" />
                                 </Button>
                             </div>
 
-                            <div className="bg-gray-50 p-6 rounded-xl border border-dashed border-gray-300 mb-6">
-                                <div className="text-center mb-4">
+                            <div className="bg-black/20 p-6 rounded-2xl border border-white/5 mb-8">
+                                <div className="text-center mb-6">
                                     <Button
                                         onClick={startListening}
                                         disabled={isListening}
-                                        className={`rounded-full w-16 h-16 flex items-center justify-center transition-all ${isListening
-                                            ? 'bg-red-100 text-red-600 animate-pulse ring-4 ring-red-50'
-                                            : 'bg-blue-100 text-blue-600 hover:bg-blue-200'
+                                        className={`rounded-full w-20 h-20 flex items-center justify-center transition-all ${isListening
+                                            ? 'bg-red-500/20 text-red-500 animate-pulse ring-4 ring-red-500/10'
+                                            : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg hover:shadow-blue-500/25 hover:scale-110'
                                             }`}
                                     >
                                         <Mic className="w-8 h-8" />
                                     </Button>
-                                    <p className="text-sm text-gray-500 mt-2">
-                                        {isListening ? 'Listening...' : 'Tap to Speak'}
+                                    <p className="text-sm text-gray-400 mt-4 font-medium uppercase tracking-widest">
+                                        {isListening ? 'Listening...' : 'Tap to Answer'}
                                     </p>
                                 </div>
 
                                 <textarea
-                                    className="w-full p-3 bg-white border border-gray-200 rounded-lg text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    rows={4}
+                                    className="w-full p-4 bg-transparent border-none text-lg text-white placeholder-gray-500 focus:ring-0 resize-none text-center"
+                                    rows={3}
                                     placeholder="Your answer will appear here..."
                                     value={userAnswer}
                                     onChange={(e) => setUserAnswer(e.target.value)}
@@ -252,16 +271,20 @@ export default function InterviewPrepPage() {
                             </div>
 
                             <div className="flex justify-end">
-                                <Button onClick={handleNext} disabled={analyzing}>
+                                <Button
+                                    onClick={handleNext}
+                                    disabled={analyzing}
+                                    className="bg-white text-slate-900 hover:bg-gray-100 px-8 py-3 rounded-xl font-bold"
+                                >
                                     {analyzing ? (
                                         <>
                                             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                            Analyzing Performance...
+                                            Analyzing...
                                         </>
                                     ) : currentQuestionIndex === questions.length - 1 ? (
                                         <>
                                             <CheckCircle className="w-4 h-4 mr-2" />
-                                            Finish & Get Feedback
+                                            Finish Interview
                                         </>
                                     ) : (
                                         <>
@@ -277,44 +300,52 @@ export default function InterviewPrepPage() {
 
                 {analysis && (
                     <div className="max-w-4xl mx-auto space-y-8">
-                        <Card className="p-8 text-center bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-100">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-2">Interview Results</h2>
-                            <div className="flex justify-center items-center gap-8 my-6">
+                        <Card className="p-8 text-center bg-white/5 backdrop-blur-xl border-white/10 shadow-2xl relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+                            <h2 className="text-3xl font-bold text-white mb-2">Interview Analysis</h2>
+                            <div className="flex justify-center items-center gap-12 my-8">
                                 <div className="text-center">
-                                    <div className="text-5xl font-bold text-blue-600 mb-1">{analysis.score}/100</div>
-                                    <div className="text-sm text-gray-500 font-medium">OVERALL SCORE</div>
+                                    <div className="text-6xl font-black bg-clip-text text-transparent bg-gradient-to-br from-blue-400 to-purple-400 mb-2">{analysis.score}</div>
+                                    <div className="text-xs text-gray-400 font-bold tracking-widest uppercase">Overall Score</div>
                                 </div>
-                                <div className="h-16 w-px bg-gray-300"></div>
+                                <div className="h-20 w-px bg-white/10"></div>
                                 <div className="text-center">
-                                    <div className={`text-3xl font-bold mb-1 ${analysis.recommendation.includes('Strong') ? 'text-green-600' :
-                                        analysis.recommendation.includes('No') ? 'text-red-600' : 'text-blue-600'
+                                    <div className={`text-3xl font-bold mb-2 ${analysis.recommendation.includes('Strong') ? 'text-green-400' :
+                                        analysis.recommendation.includes('No') ? 'text-red-400' : 'text-blue-400'
                                         }`}>
                                         {analysis.recommendation}
                                     </div>
-                                    <div className="text-sm text-gray-500 font-medium">RECOMMENDATION</div>
+                                    <div className="text-xs text-gray-400 font-bold tracking-widest uppercase">Verdict</div>
                                 </div>
                             </div>
                         </Card>
 
                         <div className="space-y-6">
-                            <h3 className="text-xl font-bold text-gray-900">Detailed Feedback</h3>
+                            <h3 className="text-2xl font-bold text-white">Detailed Feedback</h3>
                             {analysis.feedback.map((item: any, i: number) => (
-                                <Card key={i} className="p-6">
-                                    <h4 className="font-semibold text-gray-900 mb-2">Q{i + 1}: {item.question}</h4>
+                                <Card key={i} className="p-6 bg-white/5 backdrop-blur-lg border-white/10 hover:bg-white/10 transition-colors">
+                                    <h4 className="font-semibold text-lg text-white mb-4 flex items-start gap-3">
+                                        <span className="bg-blue-500/20 text-blue-300 px-2 py-1 rounded text-sm whitespace-nowrap">Q{i + 1}</span>
+                                        {item.question}
+                                    </h4>
 
-                                    <div className="mb-4">
-                                        <p className="text-sm font-medium text-gray-500 mb-1">Your Answer:</p>
-                                        <p className="text-gray-700 bg-gray-50 p-3 rounded-lg italic">"{item.userAnswer || 'No answer provided'}"</p>
+                                    <div className="mb-6 bg-black/20 rounded-xl p-4 border border-white/5">
+                                        <p className="text-sm font-medium text-gray-500 mb-2 uppercase tracking-wider">Your Answer</p>
+                                        <p className="text-gray-300 italic">"{item.userAnswer || 'No answer provided'}"</p>
                                     </div>
 
-                                    <div className="grid md:grid-cols-2 gap-4">
-                                        <div className="bg-blue-50 p-4 rounded-lg">
-                                            <p className="text-sm font-bold text-blue-800 mb-1">Feedback</p>
-                                            <p className="text-sm text-blue-700">{item.feedback}</p>
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="bg-blue-500/10 p-5 rounded-xl border border-blue-500/20">
+                                            <p className="text-sm font-bold text-blue-300 mb-2 flex items-center gap-2">
+                                                <Info className="w-4 h-4" /> Feedback
+                                            </p>
+                                            <p className="text-sm text-blue-100/80 leading-relaxed">{item.feedback}</p>
                                         </div>
-                                        <div className="bg-green-50 p-4 rounded-lg">
-                                            <p className="text-sm font-bold text-green-800 mb-1">Better Answer</p>
-                                            <p className="text-sm text-green-700">{item.betterAnswer}</p>
+                                        <div className="bg-green-500/10 p-5 rounded-xl border border-green-500/20">
+                                            <p className="text-sm font-bold text-green-300 mb-2 flex items-center gap-2">
+                                                <CheckCircle className="w-4 h-4" /> Improved Answer
+                                            </p>
+                                            <p className="text-sm text-green-100/80 leading-relaxed">{item.betterAnswer}</p>
                                         </div>
                                     </div>
                                 </Card>

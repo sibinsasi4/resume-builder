@@ -22,6 +22,7 @@ interface PremiumTemplateProps {
     colorTheme: ColorTheme;
     fontFamily: string;
     fontSize: string;
+    spacing?: 'compact' | 'standard';
     sectionOrder?: string[];
     onReorder?: (newOrder: string[]) => void;
 }
@@ -31,6 +32,7 @@ export default function PremiumTemplate({
     colorTheme,
     fontFamily,
     fontSize,
+    spacing = 'standard',
     sectionOrder = [],
     onReorder
 }: PremiumTemplateProps) {
@@ -256,7 +258,7 @@ export default function PremiumTemplate({
     );
 
     return (
-        <div className={`bg-white shadow-2xl ${fontFamily} ${fontSize} w-full mx-auto flex flex-col`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white shadow-2xl ${fontFamily} ${fontSize} mx-auto print:mx-0 flex flex-col`} style={{ width: '210mm', minHeight: '297mm' }}>
 
             {/* Top Header - More Premium Look */}
             <div className="relative pt-12 pb-10 px-12">

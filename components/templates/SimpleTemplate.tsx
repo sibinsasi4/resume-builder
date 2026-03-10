@@ -21,6 +21,7 @@ interface SimpleTemplateProps {
     colorTheme: ColorTheme;
     fontFamily: string;
     fontSize: string;
+    spacing?: 'compact' | 'standard';
     sectionOrder?: string[];
     onReorder?: (newOrder: string[]) => void;
 }
@@ -30,6 +31,7 @@ export default function SimpleTemplate({
     colorTheme,
     fontFamily,
     fontSize,
+    spacing = 'standard',
     sectionOrder = [],
     onReorder
 }: SimpleTemplateProps) {
@@ -142,7 +144,7 @@ export default function SimpleTemplate({
     const currentOrder = sectionOrder.length > 0 ? sectionOrder : defaultOrder;
 
     return (
-        <div className={`bg-white p-12 ${fontFamily} ${fontSize} w-full mx-auto`} style={{ minHeight: '11in' }}>
+        <div className={`bg-white p-12 ${fontFamily} ${fontSize} mx-auto print:mx-0`} style={{ width: '210mm', minHeight: '297mm' }}>
             {/* Header - Ultra Simple */}
             <div className="mb-8">
                 <h1 className="text-5xl font-light mb-3">{personalInfo.fullName || 'Your Name'}</h1>

@@ -84,7 +84,7 @@ function SortableEducationItem({
                         type="text"
                         value={edu.institution}
                         onChange={(e) => updateEducation(index, 'institution', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="University name"
                     />
                 </div>
@@ -94,7 +94,7 @@ function SortableEducationItem({
                         type="text"
                         value={edu.degree}
                         onChange={(e) => updateEducation(index, 'degree', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="Bachelor of Science"
                     />
                 </div>
@@ -107,7 +107,7 @@ function SortableEducationItem({
                         type="text"
                         value={edu.field}
                         onChange={(e) => updateEducation(index, 'field', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="Computer Science"
                     />
                 </div>
@@ -117,7 +117,7 @@ function SortableEducationItem({
                         type="text"
                         value={edu.location}
                         onChange={(e) => updateEducation(index, 'location', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="City, State"
                     />
                 </div>
@@ -130,7 +130,7 @@ function SortableEducationItem({
                         type="text"
                         value={edu.startDate}
                         onChange={(e) => updateEducation(index, 'startDate', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="2015"
                     />
                 </div>
@@ -140,7 +140,7 @@ function SortableEducationItem({
                         type="text"
                         value={edu.endDate}
                         onChange={(e) => updateEducation(index, 'endDate', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="2019"
                     />
                 </div>
@@ -150,7 +150,7 @@ function SortableEducationItem({
                         type="text"
                         value={edu.gpa || ''}
                         onChange={(e) => updateEducation(index, 'gpa', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="3.8/4.0"
                     />
                 </div>

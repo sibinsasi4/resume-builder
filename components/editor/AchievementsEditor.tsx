@@ -73,7 +73,7 @@ function SortableAchievementItem({
                     type="text"
                     value={text}
                     onChange={(e) => updateAchievement(id, e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                    className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                     placeholder="Describe your achievement..."
                 />
             </div>

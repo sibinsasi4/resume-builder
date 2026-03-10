@@ -84,7 +84,7 @@ function SortableCertificationItem({
                         type="text"
                         value={cert.name}
                         onChange={(e) => updateCertification(index, 'name', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="AWS Certified Solutions Architect"
                     />
                 </div>
@@ -94,7 +94,7 @@ function SortableCertificationItem({
                         type="text"
                         value={cert.issuer}
                         onChange={(e) => updateCertification(index, 'issuer', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="Amazon Web Services"
                     />
                 </div>
@@ -107,7 +107,7 @@ function SortableCertificationItem({
                         type="text"
                         value={cert.date}
                         onChange={(e) => updateCertification(index, 'date', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="2023-05"
                     />
                 </div>
@@ -117,7 +117,7 @@ function SortableCertificationItem({
                         type="text"
                         value={cert.expiryDate || ''}
                         onChange={(e) => updateCertification(index, 'expiryDate', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="2026-05"
                     />
                 </div>
@@ -129,7 +129,7 @@ function SortableCertificationItem({
                     type="text"
                     value={cert.credentialId || ''}
                     onChange={(e) => updateCertification(index, 'credentialId', e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                    className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                     placeholder="ABC123XYZ456"
                 />
             </div>

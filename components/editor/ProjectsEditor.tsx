@@ -86,7 +86,7 @@ function SortableProjectItem({
                         type="text"
                         value={project.name}
                         onChange={(e) => updateProject(index, 'name', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="E-commerce Platform"
                     />
                 </div>
@@ -96,7 +96,7 @@ function SortableProjectItem({
                         type="text"
                         value={project.link || ''}
                         onChange={(e) => updateProject(index, 'link', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="https://github.com/..."
                     />
                 </div>
@@ -107,7 +107,7 @@ function SortableProjectItem({
                 <textarea
                     value={project.description}
                     onChange={(e) => updateProject(index, 'description', e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                    className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                     rows={3}
                     placeholder="Describe the project and your role..."
                 />
@@ -119,7 +119,7 @@ function SortableProjectItem({
                     type="text"
                     value={(project.technologies || []).join(', ')}
                     onChange={(e) => updateTechnologies(index, e.target.value)}
-                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                    className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                     placeholder="React, Node.js, MongoDB, AWS"
                 />
                 <p className="text-xs text-gray-500 mt-1">
@@ -134,7 +134,7 @@ function SortableProjectItem({
                         type="text"
                         value={project.startDate || ''}
                         onChange={(e) => updateProject(index, 'startDate', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="2023-01"
                     />
                 </div>
@@ -144,7 +144,7 @@ function SortableProjectItem({
                         type="text"
                         value={project.endDate || ''}
                         onChange={(e) => updateProject(index, 'endDate', e.target.value)}
-                        className="w-full px-3 py-2 border rounded-lg text-sm"
+                        className="w-full px-3 py-2 border rounded-lg text-sm text-gray-900 bg-white"
                         placeholder="2023-06"
                     />
                 </div>

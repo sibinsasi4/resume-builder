@@ -38,7 +38,7 @@ export async function GET() {
         let downloadsLimit = 0;
         if (subscription) {
             if (subscription.plan === 'payperuse') {
-                downloadsLimit = 1; // Single download
+                downloadsLimit = subscription.downloadsLimit;
             } else if (subscription.plan === 'pro' || subscription.plan === 'premium') {
                 downloadsLimit = 30; // 30 downloads per month
             }
